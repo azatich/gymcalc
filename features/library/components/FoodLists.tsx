@@ -1,0 +1,153 @@
+"use client";
+
+import { useMemo } from "react";
+import { Button } from "@/components/ui/button";
+import { Food, useFoodLibraryQuery } from "../hooks/useFoodLibraryQuery";
+import { Edit2, Loader2, Trash2 } from "lucide-react";
+import { categories } from "../constants";
+import { useDeleteFoodLibraryMutation } from "../hooks/useDeleteFoodLibraryMutation";
+import { useState } from "react";
+import FoodListsSkeleton from "./FoodListsSkeleton";
+
+interface FoodListsProps {
+  searchQuery: string;
+  selectedCategory: string;
+  data?: Food[];
+  isLoading: boolean
+}
+
+const FoodLists = ({ searchQuery, selectedCategory, data, isLoading }: FoodListsProps) => {
+  const deleteFoodFromLibrary = useDeleteFoodLibraryMutation();
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+
+  const handleDelete = async (id: string) => {
+    setDeletingId(id);
+    try {
+      await deleteFoodFromLibrary.mutateAsync(id);
+    } finally {
+      setDeletingId(null);
+    }
+  };
+  
+  const filteredData = useMemo(() => {
+    if (!data) return [];
+
+    return data.filter((product) => {
+      const matchesCategory =
+        selectedCategory === "all" ||
+        product.category.toLowerCase() === selectedCategory.toLowerCase();
+
+      const matchesSearch =
+        searchQuery === "" ||
+        product.name.toLowerCase().includes(searchQuery.toLowerCase());
+
+      return matchesCategory && matchesSearch;
+    });
+  }, [data, searchQuery, selectedCategory]);
+
+  if (isLoading) {
+    return <FoodListsSkeleton />;
+  }
+
+  if (!data || data.length === 0) {
+    return (
+      <div className="text-center py-12 text-gray-500">
+        Нет продуктов в библиотеке
+      </div>
+    );
+  }
+
+  if (filteredData.length === 0) {
+    return (
+      <div className="text-center py-12 text-gray-500">
+        Продукты не найдены
+      </div>
+    );
+  }
+
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      {filteredData.map((product) => (
+        <div
+          key={product.id}
+          className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 hover:shadow-md transition-shadow"
+        >
+          <div className="flex items-start justify-between mb-3">
+            <div className="flex-1">
+              <div className="flex items-center gap-2 mb-1">
+                <span className="text-xl">
+                  {categories.map(
+                    (category) =>
+                      category.value.toLowerCase() ===
+                        product.category.toLowerCase() && category.emoji
+                  )}
+                </span>
+                <h3 className="text-lg">{product.name}</h3>
+              </div>
+              <div className="text-sm text-gray-500">
+                {categories.map(
+                  (category) =>
+                    category.value.toLocaleLowerCase() ===
+                      product.category.toLocaleLowerCase() && category.label
+                )}{" "}
+                • {product.portion}
+              </div>
+            </div>
+            <div className="text-right">
+              <div className="text-2xl text-primary">
+                {product.calories_per_100g}
+              </div>
+              <div className="text-xs text-gray-500">ккал</div>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-3 gap-2 mb-4">
+            <div className="bg-indigo-50 rounded-lg p-2 text-center">
+              <div className="text-base text-indigo-600">
+                {product.protein_per_100g}г
+              </div>
+              <div className="text-xs text-gray-600">Б</div>
+            </div>
+            <div className="bg-amber-50 rounded-lg p-2 text-center">
+              <div className="text-base text-amber-600">
+                {product.fat_per_100g}г
+              </div>
+              <div className="text-xs text-gray-600">Ж</div>
+            </div>
+            <div className="bg-green-50 rounded-lg p-2 text-center">
+              <div className="text-base text-green-600">
+                {product.carbs_per_100g}г
+              </div>
+              <div className="text-xs text-gray-600">У</div>
+            </div>
+          </div>
+
+          <div className="flex gap-2">
+            <Button
+              className="flex-1 h-10 rounded-lg hover:bg-gray-100 border border-gray-400"
+              size="sm"
+            >
+              <Edit2 className="w-4 h-4 mr-1" />
+              Изменить
+            </Button>
+            <Button
+              onClick={() => handleDelete(product.id)}
+              disabled={deletingId === product.id}
+              variant="outline"
+              className="h-10 rounded-lg text-red-600 hover:bg-red-50 hover:text-red-700 border-red-200"
+              size="sm"
+            >
+              {deletingId === product.id ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                <Trash2 className="w-4 h-4" />
+              )}
+            </Button>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+};
+
+export default FoodLists;
