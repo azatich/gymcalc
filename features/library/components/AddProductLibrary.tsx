@@ -21,7 +21,6 @@ import {
 } from "@/components/ui/dialog";
 import { categories } from "../constants";
 import { useFoodLibraryMutation } from "../hooks/useFoodLibraryMutation";
-import { useFoodLibraryQuery } from "../hooks/useFoodLibraryQuery";
 
 const AddProductLibrary = () => {
   const [showAddModal, setShowAddModal] = useState(false);

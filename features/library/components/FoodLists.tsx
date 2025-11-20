@@ -2,33 +2,29 @@
 
 import { useMemo } from "react";
 import { Button } from "@/components/ui/button";
-import { Food, useFoodLibraryQuery } from "../hooks/useFoodLibraryQuery";
-import { Edit2, Loader2, Trash2 } from "lucide-react";
+import { Loader2, Trash2 } from "lucide-react";
 import { categories } from "../constants";
 import { useDeleteFoodLibraryMutation } from "../hooks/useDeleteFoodLibraryMutation";
 import { useState } from "react";
 import FoodListsSkeleton from "./FoodListsSkeleton";
+import EditProductItem from "./EditProductItem";
+import { Product } from "../types/library";
+import DeleteProductItem from "./DeleteProductItem";
 
-interface FoodListsProps {
+interface ProductListsProps {
   searchQuery: string;
   selectedCategory: string;
-  data?: Food[];
-  isLoading: boolean
+  data?: Product[];
+  isLoading: boolean;
 }
 
-const FoodLists = ({ searchQuery, selectedCategory, data, isLoading }: FoodListsProps) => {
-  const deleteFoodFromLibrary = useDeleteFoodLibraryMutation();
-  const [deletingId, setDeletingId] = useState<string | null>(null);
+const ProductLists = ({
+  searchQuery,
+  selectedCategory,
+  data,
+  isLoading,
+}: ProductListsProps) => {
 
-  const handleDelete = async (id: string) => {
-    setDeletingId(id);
-    try {
-      await deleteFoodFromLibrary.mutateAsync(id);
-    } finally {
-      setDeletingId(null);
-    }
-  };
-  
   const filteredData = useMemo(() => {
     if (!data) return [];
 
@@ -59,9 +55,7 @@ const FoodLists = ({ searchQuery, selectedCategory, data, isLoading }: FoodLists
 
   if (filteredData.length === 0) {
     return (
-      <div className="text-center py-12 text-gray-500">
-        Продукты не найдены
-      </div>
+      <div className="text-center py-12 text-gray-500">Продукты не найдены</div>
     );
   }
 
@@ -123,26 +117,8 @@ const FoodLists = ({ searchQuery, selectedCategory, data, isLoading }: FoodLists
           </div>
 
           <div className="flex gap-2">
-            <Button
-              className="flex-1 h-10 rounded-lg hover:bg-gray-100 border border-gray-400"
-              size="sm"
-            >
-              <Edit2 className="w-4 h-4 mr-1" />
-              Изменить
-            </Button>
-            <Button
-              onClick={() => handleDelete(product.id)}
-              disabled={deletingId === product.id}
-              variant="outline"
-              className="h-10 rounded-lg text-red-600 hover:bg-red-50 hover:text-red-700 border-red-200"
-              size="sm"
-            >
-              {deletingId === product.id ? (
-                <Loader2 className="w-4 h-4 animate-spin" />
-              ) : (
-                <Trash2 className="w-4 h-4" />
-              )}
-            </Button>
+            <EditProductItem product={product} />
+            <DeleteProductItem id={product.id} />
           </div>
         </div>
       ))}
@@ -150,4 +126,4 @@ const FoodLists = ({ searchQuery, selectedCategory, data, isLoading }: FoodLists
   );
 };
 
-export default FoodLists;
+export default ProductLists;
