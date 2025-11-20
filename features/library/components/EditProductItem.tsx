@@ -18,16 +18,15 @@ import { Label } from "@radix-ui/react-label";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Edit2 } from "lucide-react";
+import { Edit2, Loader2 } from "lucide-react";
 import { categories } from "../constants";
-import { Product } from "../types/library";
+import { Product, ProductCategory } from "../types/library";
+import { useUpdateFoodFromLibraryMutation } from "../hooks/useUpdateFoodFromLibraryMutation";
 
 const EditProductItem = ({ product }: {product: Product}) => {
   const [showEditProductModal, setShowEditProductModal] = useState(false);
-
-  console.log(product);
+  const updateFoodFromLib = useUpdateFoodFromLibraryMutation()
   
-
   const [formData, setFormData] = useState({
     name: product.name,
     category: product.category,
@@ -39,7 +38,14 @@ const EditProductItem = ({ product }: {product: Product}) => {
   });
   
   const handleSubmit = async () => {
-    console.log("sss");
+    try {
+      await updateFoodFromLib.mutateAsync({
+        id: product.id,
+        data: formData,
+      });
+      setShowEditProductModal(false);
+    } catch (error) {
+    }
   };
   
 
@@ -87,7 +93,7 @@ const EditProductItem = ({ product }: {product: Product}) => {
               <Select
                 value={formData.category}
                 onValueChange={(value) =>
-                  setFormData({ ...formData, category: value })
+                  setFormData({ ...formData, category: value as ProductCategory })
                 }
               >
                 <SelectTrigger className="h-14 rounded-xl">
@@ -227,10 +233,11 @@ const EditProductItem = ({ product }: {product: Product}) => {
             </Button>
             <Button
               type="button"
+              disabled={updateFoodFromLib.isPending}
               onClick={handleSubmit}
-              className="bg-black text-white h-14 text-lg rounded-xl shadow-md hover:bg-black/80 transition-colors duration-300"
+              className="bg-black text-white text-lg h-14 rounded-xl shadow-md hover:bg-black/80 transition-colors duration-300 disabled:bg-black/80"
             >
-              Сохранить
+              {updateFoodFromLib.isPending ? <Loader2 className="animate-spin" />: 'Сохранить'}
             </Button>
           </div>
         </div>

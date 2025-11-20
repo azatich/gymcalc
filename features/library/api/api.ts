@@ -1,4 +1,5 @@
 import { api } from "@/lib/axios"
+import { ProductFormData } from "../types/library";
 
 export const foodLibraryApi = {
     baseKey: 'foods-library',
@@ -15,6 +16,11 @@ export const foodLibraryApi = {
 
     deleteFoodFromLibrary: async (id: string) => {
         const res = await api.delete(`/library/${id}`);
+        return res.data;
+    },
+
+    updateFoodFromLibrary: async ({id, data}: {id: string, data: ProductFormData}) => {
+        const res = await api.patch(`/library/${id}`, data)
         return res.data;
     }
 }

@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import AddProductLibrary from "@/features/library/components/AddProductLibrary";
-import FoodLists from "@/features/library/components/FoodLists";
+import AddProductItem from "@/features/library/components/AddProductItem";
+import ProductLists from "@/features/library/components/FoodLists";
 import SearchProduct from "@/features/library/components/SearchProduct";
 import { useFoodLibraryQuery } from "@/features/library/hooks/useFoodLibraryQuery";
 import { categories } from "@/features/library/constants";
@@ -23,7 +23,7 @@ const Library = () => {
     
   return (
     <div className="space-y-6">
-      <AddProductLibrary />
+      <AddProductItem />
       <SearchProduct
         searchQuery={searchQuery}
         onSearchChange={setSearchQuery}
@@ -31,7 +31,7 @@ const Library = () => {
         onCategoryChange={setSelectedCategory}
         availableCategories={availableCategoriesWithAll}
       />
-      <FoodLists
+      <ProductLists
         data={data}
         isLoading={isLoading}
         searchQuery={searchQuery}

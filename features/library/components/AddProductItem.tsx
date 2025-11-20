@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Plus, X } from "lucide-react";
+import { Loader2, Plus, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -22,9 +22,8 @@ import {
 import { categories } from "../constants";
 import { useFoodLibraryMutation } from "../hooks/useFoodLibraryMutation";
 
-const AddProductLibrary = () => {
+const AddProductItem = () => {
   const [showAddModal, setShowAddModal] = useState(false);
-  const [editingProduct, setEditingProduct] = useState(null);
 
   const [formData, setFormData] = useState({
     name: "",
@@ -36,25 +35,23 @@ const AddProductLibrary = () => {
     carbs: "",
   });
 
-  const handleCancel = () => {
-    setShowAddModal(false);
-    setEditingProduct(null);
-    setFormData({
-      name: "",
-      category: "",
-      serving: "",
-      calories: "",
-      protein: "",
-      fats: "",
-      carbs: "",
-    });
-  };
-
   const addFoodToLibrary = useFoodLibraryMutation();
 
-  const handleSubmit = () => {
-    handleCancel();
-    addFoodToLibrary.mutate(formData);
+  const handleSubmit = async () => {
+    try {
+      await addFoodToLibrary.mutateAsync(formData);
+      setShowAddModal(false);
+      setFormData({
+        name: "",
+        category: "",
+        serving: "",
+        calories: "",
+        protein: "",
+        fats: "",
+        carbs: "",
+      });
+    } catch (error) {
+    }
   };
 
   return (
@@ -78,7 +75,7 @@ const AddProductLibrary = () => {
           <DialogContent className="bg-white border-none max-w-2xl max-h-[90vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle className="text-2xl">
-                {editingProduct ? "Редактировать продукт" : "Добавить продукт"}
+                Добавить продукт
               </DialogTitle>
             </DialogHeader>
 
@@ -240,17 +237,18 @@ const AddProductLibrary = () => {
                 <Button
                   type="button"
                   variant="outline"
-                  onClick={handleCancel}
+                  onClick={() => setShowAddModal(false)}
                   className="h-14 text-lg rounded-xl"
                 >
                   Отмена
                 </Button>
                 <Button
                   type="button"
+                  disabled={addFoodToLibrary.isPending}
                   onClick={handleSubmit}
-                  className="bg-black text-white h-14 text-lg rounded-xl shadow-md hover:bg-black/80 transition-colors duration-300"
+                  className="bg-black text-white disabled:bg-black/80 h-14 text-lg rounded-xl shadow-md hover:bg-black/80 transition-colors duration-300"
                 >
-                  {editingProduct ? "Сохранить" : "Добавить"}
+                  {addFoodToLibrary.isPending ? <Loader2 className="animate-spin" /> : 'Добавить'}
                 </Button>
               </div>
             </div>
@@ -261,4 +259,4 @@ const AddProductLibrary = () => {
   );
 };
 
-export default AddProductLibrary;
+export default AddProductItem;

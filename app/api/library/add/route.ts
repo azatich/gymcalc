@@ -13,7 +13,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const { name, calories, protein, carbs, fats, category, serving, user_id } =
+  const { name, calories, protein, carbs, fats, category, serving } =
     body;
 
   const { data, error } = await supabase
