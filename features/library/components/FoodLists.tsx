@@ -98,7 +98,7 @@ const ProductLists = ({
           <div className="grid grid-cols-3 gap-2 mb-4">
             <div className="bg-indigo-50 rounded-lg p-2 text-center">
               <div className="text-base text-indigo-600">
-                {product.protein_per_100g}г
+                {product.proteins_per_100g}г
               </div>
               <div className="text-xs text-gray-600">Б</div>
             </div>

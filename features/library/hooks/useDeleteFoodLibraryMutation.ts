@@ -30,9 +30,10 @@ export function useDeleteFoodLibraryMutation() {
       });
     },
 
-    onError: (error) => {
+    onError: (error: any) => {
       console.error('Delete error:', error);
-      toast.error("Не удалось удалить продукт", {
+      const errorMessage = error?.response?.data?.error || error?.message || "Не удалось удалить продукт";
+      toast.error(errorMessage, {
         duration: 4000,
         icon: "❌",
         style: {

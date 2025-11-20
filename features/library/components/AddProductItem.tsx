@@ -28,29 +28,105 @@ const AddProductItem = () => {
   const [formData, setFormData] = useState({
     name: "",
     category: "",
-    serving: "",
+    portion: "",
     calories: "",
-    protein: "",
+    proteins: "",
     fats: "",
     carbs: "",
   });
 
+  const [errors, setErrors] = useState<Record<string, string>>({});
+
+  console.log(errors);
+
   const addFoodToLibrary = useFoodLibraryMutation();
 
+  const validateForm = (): boolean => {
+    const newErrors: Record<string, string> = {};
+
+    if (!formData.name.trim()) {
+      newErrors.name = "Название продукта обязательно";
+    }
+
+    if (!formData.category) {
+      newErrors.category = "Категория обязательна";
+    }
+
+    if (!formData.portion.trim()) {
+      newErrors.portion = "Порция обязательна";
+    }
+
+    if (!formData.calories.trim()) {
+      newErrors.calories = "Калории обязательны";
+    }
+
+    if (!formData.proteins.trim()) {
+      newErrors.proteins = "Белки обязательны";
+    }
+
+    if (!formData.fats.trim()) {
+      newErrors.fats = "Жиры обязательны";
+    }
+
+    if (!formData.carbs.trim()) {
+      newErrors.carbs = "Углеводы обязательны";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   const handleSubmit = async () => {
+    if (!validateForm()) {
+      return;
+    }
+
     try {
       await addFoodToLibrary.mutateAsync(formData);
       setShowAddModal(false);
       setFormData({
         name: "",
         category: "",
-        serving: "",
+        portion: "",
         calories: "",
-        protein: "",
+        proteins: "",
         fats: "",
         carbs: "",
       });
-    } catch (error) {
+      setErrors({});
+    } catch (error) {}
+  };
+
+  const handleTextChange = (field: string, value: string) => {
+    setFormData({ ...formData, [field]: value });
+    // Очищаем ошибку при изменении поля
+    if (errors[field]) {
+      setErrors({ ...errors, [field]: "" });
+    }
+  };
+
+  const handleCategoryChange = (value: string) => {
+    setFormData({ ...formData, category: value });
+    // Очищаем ошибку при изменении поля
+    if (errors.category) {
+      setErrors({ ...errors, category: "" });
+    }
+  };
+
+  const handleCloseModal = (open: boolean) => {
+    setShowAddModal(open);
+    if (!open) {
+      // Сбрасываем форму и ошибки при закрытии модалки
+      setFormData({
+        name: "",
+        category: "",
+        portion: "",
+        calories: "",
+        proteins: "",
+        fats: "",
+        carbs: "",
+      });
+      setErrors({});
     }
   };
 
@@ -64,7 +140,7 @@ const AddProductItem = () => {
           </p>
         </div>
 
-        <Dialog open={showAddModal} onOpenChange={setShowAddModal}>
+        <Dialog open={showAddModal} onOpenChange={handleCloseModal}>
           <DialogTrigger asChild>
             <Button className="bg-black text-white flex items-center w-full md:w-auto h-12 px-6 rounded-xl shadow-md hover:bg-black/80 transition-colors duration-300">
               <Plus className="w-5 h-5 mr-2" />
@@ -74,9 +150,7 @@ const AddProductItem = () => {
 
           <DialogContent className="bg-white border-none max-w-2xl max-h-[90vh] overflow-y-auto">
             <DialogHeader>
-              <DialogTitle className="text-2xl">
-                Добавить продукт
-              </DialogTitle>
+              <DialogTitle className="text-2xl">Добавить продукт</DialogTitle>
             </DialogHeader>
 
             <div className="space-y-5">
@@ -88,12 +162,15 @@ const AddProductItem = () => {
                   type="text"
                   id="modal-name"
                   placeholder="Например: Куриная грудка"
-                  className="h-14 text-lg rounded-xl"
+                  className={`h-14 text-lg rounded-xl ${
+                    errors.name ? "border-red-500 focus:border-red-500" : ""
+                  }`}
                   value={formData.name}
-                  onChange={(e) =>
-                    setFormData({ ...formData, name: e.target.value })
-                  }
+                  onChange={(e) => handleTextChange("name", e.target.value)}
                 />
+                {errors.name && (
+                  <p className="text-sm text-red-500">{errors.name}</p>
+                )}
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -103,12 +180,16 @@ const AddProductItem = () => {
                   </Label>
                   <Select
                     value={formData.category}
-                    onValueChange={(value) =>
-                      setFormData({ ...formData, category: value })
-                    }
+                    onValueChange={handleCategoryChange}
                   >
-                    <SelectTrigger className="h-14 rounded-xl">
-                      <SelectValue />
+                    <SelectTrigger
+                      className={`h-14 rounded-xl ${
+                        errors.category
+                          ? "border-red-500 focus:border-red-500"
+                          : ""
+                      }`}
+                    >
+                      <SelectValue placeholder="Выберите категорию" />
                     </SelectTrigger>
                     <SelectContent className="bg-white">
                       {categories
@@ -124,22 +205,32 @@ const AddProductItem = () => {
                         ))}
                     </SelectContent>
                   </Select>
+                  {errors.category && (
+                    <p className="text-sm text-red-500">{errors.category}</p>
+                  )}
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="modal-serving" className="text-base">
+                  <Label htmlFor="modal-portion" className="text-base">
                     Порция
                   </Label>
                   <Input
                     type="text"
-                    id="modal-serving"
+                    id="modal-portion"
                     placeholder="100г"
-                    className="h-14 text-lg rounded-xl"
-                    value={formData.serving}
+                    className={`h-14 text-lg rounded-xl ${
+                      errors.portion
+                        ? "border-red-500 focus:border-red-500"
+                        : ""
+                    }`}
+                    value={formData.portion}
                     onChange={(e) =>
-                      setFormData({ ...formData, serving: e.target.value })
+                      handleTextChange("portion", e.target.value)
                     }
                   />
+                  {errors.portion && (
+                    <p className="text-sm text-red-500">{errors.portion}</p>
+                  )}
                 </div>
               </div>
 
@@ -152,18 +243,26 @@ const AddProductItem = () => {
                     <Input
                       type="number"
                       step="0.1"
+                      min="0"
                       id="modal-calories"
                       placeholder="0"
-                      className="h-14 text-lg rounded-xl pr-16"
+                      className={`h-14 text-lg rounded-xl pr-16 ${
+                        errors.calories
+                          ? "border-red-500 focus:border-red-500"
+                          : ""
+                      }`}
                       value={formData.calories}
                       onChange={(e) =>
-                        setFormData({ ...formData, calories: e.target.value })
+                        handleTextChange("calories", e.target.value)
                       }
                     />
                     <div className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500">
                       ккал
                     </div>
                   </div>
+                  {errors.calories && (
+                    <p className="text-sm text-red-500">{errors.calories}</p>
+                  )}
                 </div>
 
                 <div className="space-y-2">
@@ -174,18 +273,26 @@ const AddProductItem = () => {
                     <Input
                       type="number"
                       step="0.1"
+                      min="0"
                       id="modal-protein"
                       placeholder="0"
-                      className="h-14 text-lg rounded-xl pr-16"
-                      value={formData.protein}
+                      className={`h-14 text-lg rounded-xl pr-16 ${
+                        errors.protein
+                          ? "border-red-500 focus:border-red-500"
+                          : ""
+                      }`}
+                      value={formData.proteins}
                       onChange={(e) =>
-                        setFormData({ ...formData, protein: e.target.value })
+                        handleTextChange("proteins", e.target.value)
                       }
                     />
                     <div className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500">
                       г
                     </div>
                   </div>
+                  {errors.proteins && (
+                    <p className="text-sm text-red-500">{errors.proteins}</p>
+                  )}
                 </div>
 
                 <div className="space-y-2">
@@ -196,18 +303,22 @@ const AddProductItem = () => {
                     <Input
                       type="number"
                       step="0.1"
+                      min="0"
                       id="modal-fats"
                       placeholder="0"
-                      className="h-14 text-lg rounded-xl pr-16"
+                      className={`h-14 text-lg rounded-xl pr-16 ${
+                        errors.fats ? "border-red-500 focus:border-red-500" : ""
+                      }`}
                       value={formData.fats}
-                      onChange={(e) =>
-                        setFormData({ ...formData, fats: e.target.value })
-                      }
+                      onChange={(e) => handleTextChange("fats", e.target.value)}
                     />
                     <div className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500">
                       г
                     </div>
                   </div>
+                  {errors.fats && (
+                    <p className="text-sm text-red-500">{errors.fats}</p>
+                  )}
                 </div>
 
                 <div className="space-y-2">
@@ -218,18 +329,26 @@ const AddProductItem = () => {
                     <Input
                       type="number"
                       step="0.1"
+                      min="0"
                       id="modal-carbs"
                       placeholder="0"
-                      className="h-14 text-lg rounded-xl pr-16"
+                      className={`h-14 text-lg rounded-xl pr-16 ${
+                        errors.carbs
+                          ? "border-red-500 focus:border-red-500"
+                          : ""
+                      }`}
                       value={formData.carbs}
                       onChange={(e) =>
-                        setFormData({ ...formData, carbs: e.target.value })
+                        handleTextChange("carbs", e.target.value)
                       }
                     />
                     <div className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500">
                       г
                     </div>
                   </div>
+                  {errors.carbs && (
+                    <p className="text-sm text-red-500">{errors.carbs}</p>
+                  )}
                 </div>
               </div>
 
@@ -237,7 +356,7 @@ const AddProductItem = () => {
                 <Button
                   type="button"
                   variant="outline"
-                  onClick={() => setShowAddModal(false)}
+                  onClick={() => handleCloseModal(false)}
                   className="h-14 text-lg rounded-xl"
                 >
                   Отмена
@@ -248,7 +367,11 @@ const AddProductItem = () => {
                   onClick={handleSubmit}
                   className="bg-black text-white disabled:bg-black/80 h-14 text-lg rounded-xl shadow-md hover:bg-black/80 transition-colors duration-300"
                 >
-                  {addFoodToLibrary.isPending ? <Loader2 className="animate-spin" /> : 'Добавить'}
+                  {addFoodToLibrary.isPending ? (
+                    <Loader2 className="animate-spin" />
+                  ) : (
+                    "Добавить"
+                  )}
                 </Button>
               </div>
             </div>

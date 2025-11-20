@@ -5,11 +5,11 @@ import { toast } from "sonner";
 type FoodLibrary = {
   name: string;
   calories: string;
-  protein: string;
+  proteins: string;
   carbs: string;
   fats: string;
   category: string;
-  serving: string;
+  portion: string;
 };
 
 export const useFoodLibraryMutation = () => {

@@ -3,7 +3,7 @@ export interface Product {
   user_id: string;
   name: string;
   calories_per_100g: string;
-  protein_per_100g: string;
+  proteins_per_100g: string;
   carbs_per_100g: string;
   fat_per_100g: string;
   created_at: string;
@@ -17,17 +17,29 @@ export interface ProductFormData {
   category: ProductCategory;
   portion: string;
   calories: string;
-  protein: string;
+  proteins: string;
   fats: string;
   carbs: string;
 }
 
 export type ProductCategory =
   | "meat"
+  | "poultry"
   | "fish"
+  | "seafood"
   | "dairy"
+  | "eggs"
   | "grains"
+  | "pasta"
+  | "bread"
   | "vegetables"
   | "fruits"
   | "nuts"
+  | "seeds"
+  | "legumes"
+  | "oils"
+  | "sweets"
+  | "beverages"
+  | "herbs_spices"
   | "other";
+

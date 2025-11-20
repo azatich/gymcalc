@@ -32,7 +32,7 @@ const EditProductItem = ({ product }: {product: Product}) => {
     category: product.category,
     portion: product.portion,
     calories: product.calories_per_100g,
-    protein: product.protein_per_100g,
+    proteins: product.proteins_per_100g,
     fats: product.fat_per_100g,
     carbs: product.carbs_per_100g,
   });
@@ -156,19 +156,19 @@ const EditProductItem = ({ product }: {product: Product}) => {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="modal-protein" className="text-base">
+              <Label htmlFor="modal-proteins" className="text-base">
                 Белки
               </Label>
               <div className="relative">
                 <Input
                   type="number"
                   step="0.1"
-                  id="modal-protein"
+                  id="modal-proteins"
                   placeholder="0"
                   className="h-14 text-lg rounded-xl pr-16"
-                  value={String(formData.protein)}
+                  value={String(formData.proteins)}
                   onChange={(e) =>
-                    setFormData({ ...formData, protein: String(e.target.value) })
+                    setFormData({ ...formData, proteins: String(e.target.value) })
                   }
                 />
                 <div className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500">

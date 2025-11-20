@@ -13,7 +13,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const { name, calories, protein, carbs, fats, category, serving } =
+  const { name, calories, proteins, carbs, fats, category, portion } =
     body;
 
   const { data, error } = await supabase
@@ -22,11 +22,11 @@ export async function POST(req: NextRequest) {
       user_id: user?.id,
       name,
       calories_per_100g: calories,
-      protein_per_100g: protein,
+      proteins_per_100g: proteins,
       carbs_per_100g: carbs,
       fat_per_100g: fats,
       category,
-      portion: serving,
+      portion,
     })
     .select()
     .single();
