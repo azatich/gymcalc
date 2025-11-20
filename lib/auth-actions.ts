@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
-import { createClient } from "@/utils/supabase/server";
+import { createClient } from "@/lib/supabase/server";
 
 export async function login(formData: FormData) {
   const supabase = await createClient();
@@ -12,10 +12,6 @@ export async function login(formData: FormData) {
   // in practice, you should validate your inputs
   const email = formData.get("email") as string;
   const password = formData.get("password") as string;
-
-  if (!email || !password) {
-    redirect("/login?error=missing_credentials");
-  }
 
   const { error } = await supabase.auth.signInWithPassword({ email, password });
 
@@ -32,10 +28,8 @@ export async function login(formData: FormData) {
 export async function signup(formData: FormData) {
   const supabase = await createClient();
 
-  // type-casting here for convenience
-  // in practice, you should validate your inputs
-  const firstName = formData.get("first-name") as string;
-  const lastName = formData.get("last-name") as string;
+  const firstName = formData.get("firstName") as string;
+  const lastName = formData.get("lastName") as string;
   const data = {
     email: formData.get("email") as string,
     password: formData.get("password") as string,

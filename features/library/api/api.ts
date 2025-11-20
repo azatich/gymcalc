@@ -14,7 +14,7 @@ export const foodLibraryApi = {
     },
 
     deleteFoodFromLibrary: async (id: string) => {
-        const res = await api.delete(`/library/delete/${id}`);
+        const res = await api.delete(`/library/${id}`);
         return res.data;
     }
 }

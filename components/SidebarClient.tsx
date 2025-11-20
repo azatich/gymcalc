@@ -45,7 +45,7 @@ export default function SidebarClient({ user }: { user: UserData }) {
             <p className="text-gray-800">Здравствуйте, {user?.username}</p>
           </div>
 
-          <nav className="flex-1 space-y-2">
+          <nav className="flex-1 space-y-2 py-3">
             {navigationItems.map((item) => {
               const Icon = item.icon;
               const isActive = currentScreen === `/${item.id}`;
@@ -65,16 +65,12 @@ export default function SidebarClient({ user }: { user: UserData }) {
                 </Link>
               );
             })}
+            <LoginButton />
           </nav>
 
-          {/* Кнопка выйти */}
-          <div className="mb-4">
-            <LoginButton />
-          </div>
-
-          <div className="bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-2xl p-6 text-white">
-            <div className="text-sm text-indigo-200 mb-2">Дневная норма</div>
-            <div className="text-3xl mb-1">2000</div>
+          <div className="bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-2xl p-3 text-white">
+            <div className="text-sm text-indigo-200">Дневная норма</div>
+            <div className="text-2xl">2000</div>
             <div className="text-sm text-indigo-200">калорий</div>
           </div>
         </aside>

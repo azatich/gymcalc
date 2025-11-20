@@ -23,7 +23,7 @@ const SignInWithGoogleButton = () => {
     <Button
       type="button"
       variant="outline"
-      className="w-full"
+      className="w-full hover:bg-gray-200 transition-colors duration-200"
       onClick={handleGoogleSignIn}
     >
       <FcGoogle /> Войти через Google
