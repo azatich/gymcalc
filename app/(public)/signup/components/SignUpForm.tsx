@@ -18,7 +18,7 @@ import {
   validateName,
   validatePassword,
   validatePasswordConfirmation,
-} from "@/lib/validationForms";
+} from "@/lib/validationLoginSignupForms";
 import { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
 import SignInWithGoogleButton from "../../login/components/SignInWithGoogleButton";

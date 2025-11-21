@@ -20,14 +20,14 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Edit2, Loader2 } from "lucide-react";
 import { categories } from "../constants";
-import { Product, ProductCategory } from "../types/library";
+import { Product, ProductCategory, ProductFormData } from "../types/types";
 import { useUpdateFoodFromLibraryMutation } from "../hooks/useUpdateFoodFromLibraryMutation";
 
 const EditProductItem = ({ product }: {product: Product}) => {
   const [showEditProductModal, setShowEditProductModal] = useState(false);
   const updateFoodFromLib = useUpdateFoodFromLibraryMutation()
   
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<ProductFormData>({
     name: product.name,
     category: product.category,
     portion: product.portion,
@@ -104,7 +104,7 @@ const EditProductItem = ({ product }: {product: Product}) => {
                     .filter((cat) => cat.value !== "all")
                     .map((cat) => (
                       <SelectItem
-                        className="hover:bg-black hover:text-white transition-colors duration-200"
+                        className="hover:bg-black hover:text-white transition-colors"
                         key={cat.value}
                         value={cat.value}
                       >
@@ -140,13 +140,13 @@ const EditProductItem = ({ product }: {product: Product}) => {
               <div className="relative">
                 <Input
                   type="number"
-                  step="0.1"
+                  step="1"
                   id="modal-calories"
                   placeholder="0"
                   className="h-14 text-lg rounded-xl pr-16"
-                  value={String(formData.calories)}
+                  value={formData.calories}
                   onChange={(e) =>
-                    setFormData({ ...formData, calories: String(e.target.value) })
+                    setFormData({ ...formData, calories: Number(e.target.value )})
                   }
                 />
                 <div className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500">
@@ -162,13 +162,13 @@ const EditProductItem = ({ product }: {product: Product}) => {
               <div className="relative">
                 <Input
                   type="number"
-                  step="0.1"
+                  step="1"
                   id="modal-proteins"
                   placeholder="0"
                   className="h-14 text-lg rounded-xl pr-16"
-                  value={String(formData.proteins)}
+                  value={formData.proteins}
                   onChange={(e) =>
-                    setFormData({ ...formData, proteins: String(e.target.value) })
+                    setFormData({ ...formData, proteins: Number(e.target.value) })
                   }
                 />
                 <div className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500">
@@ -184,13 +184,13 @@ const EditProductItem = ({ product }: {product: Product}) => {
               <div className="relative">
                 <Input
                   type="number"
-                  step="0.1"
+                  step="1"
                   id="modal-fats"
                   placeholder="0"
                   className="h-14 text-lg rounded-xl pr-16"
-                  value={String(formData.fats)}
+                  value={formData.fats}
                   onChange={(e) =>
-                    setFormData({ ...formData, fats: String(e.target.value) })
+                    setFormData({ ...formData, fats: Number(e.target.value) })
                   }
                 />
                 <div className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500">
@@ -206,13 +206,13 @@ const EditProductItem = ({ product }: {product: Product}) => {
               <div className="relative">
                 <Input
                   type="number"
-                  step="0.1"
+                  step="1"
                   id="modal-carbs"
                   placeholder="0"
                   className="h-14 text-lg rounded-xl pr-16"
-                  value={String(formData.carbs)}
+                  value={formData.carbs}
                   onChange={(e) =>
-                    setFormData({ ...formData, carbs: String(e.target.value) })
+                    setFormData({ ...formData, carbs: Number(e.target.value) })
                   }
                 />
                 <div className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500">

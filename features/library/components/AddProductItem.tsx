@@ -21,6 +21,8 @@ import {
 } from "@/components/ui/dialog";
 import { categories } from "../constants";
 import { useFoodLibraryMutation } from "../hooks/useFoodLibraryMutation";
+import { createTextChangeHandler } from "@/lib/useFormHandlers";
+import { validateProductAddForm } from "@/lib/validationProductAddForm";
 
 const AddProductItem = () => {
   const [showAddModal, setShowAddModal] = useState(false);
@@ -37,47 +39,10 @@ const AddProductItem = () => {
 
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  console.log(errors);
-
-  const addFoodToLibrary = useFoodLibraryMutation();
-
-  const validateForm = (): boolean => {
-    const newErrors: Record<string, string> = {};
-
-    if (!formData.name.trim()) {
-      newErrors.name = "Название продукта обязательно";
-    }
-
-    if (!formData.category) {
-      newErrors.category = "Категория обязательна";
-    }
-
-    if (!formData.portion.trim()) {
-      newErrors.portion = "Порция обязательна";
-    }
-
-    if (!formData.calories.trim()) {
-      newErrors.calories = "Калории обязательны";
-    }
-
-    if (!formData.proteins.trim()) {
-      newErrors.proteins = "Белки обязательны";
-    }
-
-    if (!formData.fats.trim()) {
-      newErrors.fats = "Жиры обязательны";
-    }
-
-    if (!formData.carbs.trim()) {
-      newErrors.carbs = "Углеводы обязательны";
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
+  const addFoodToLibrary = useFoodLibraryMutation();;
 
   const handleSubmit = async () => {
-    if (!validateForm()) {
+    if (!validateProductAddForm(formData, setErrors)) {
       return;
     }
 
@@ -97,13 +62,7 @@ const AddProductItem = () => {
     } catch (error) {}
   };
 
-  const handleTextChange = (field: string, value: string) => {
-    setFormData({ ...formData, [field]: value });
-    // Очищаем ошибку при изменении поля
-    if (errors[field]) {
-      setErrors({ ...errors, [field]: "" });
-    }
-  };
+  const handleTextChange = createTextChangeHandler(formData, setFormData, errors, setErrors)
 
   const handleCategoryChange = (value: string) => {
     setFormData({ ...formData, category: value });
@@ -242,7 +201,7 @@ const AddProductItem = () => {
                   <div className="relative">
                     <Input
                       type="number"
-                      step="0.1"
+                      step="1"
                       min="0"
                       id="modal-calories"
                       placeholder="0"
@@ -272,7 +231,7 @@ const AddProductItem = () => {
                   <div className="relative">
                     <Input
                       type="number"
-                      step="0.1"
+                      step="1"
                       min="0"
                       id="modal-protein"
                       placeholder="0"
@@ -302,7 +261,7 @@ const AddProductItem = () => {
                   <div className="relative">
                     <Input
                       type="number"
-                      step="0.1"
+                      step="1"
                       min="0"
                       id="modal-fats"
                       placeholder="0"
@@ -328,7 +287,7 @@ const AddProductItem = () => {
                   <div className="relative">
                     <Input
                       type="number"
-                      step="0.1"
+                      step="1"
                       min="0"
                       id="modal-carbs"
                       placeholder="0"

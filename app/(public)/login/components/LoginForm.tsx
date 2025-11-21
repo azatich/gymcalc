@@ -11,7 +11,7 @@ import { Label } from "@/components/ui/label";
 import { login } from "@/lib/auth-actions";
 import SignInWithGoogleButton from "./SignInWithGoogleButton";
 
-import { validateEmail, validatePassword } from "@/lib/validationForms";
+import { validateEmail, validatePassword } from "@/lib/validationLoginSignupForms";
 
 export function LoginForm() {
   const [showPassword, setShowPassword] = useState(false);

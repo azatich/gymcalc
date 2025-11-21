@@ -1,5 +1,5 @@
 import { api } from "@/lib/axios"
-import { ProductFormData } from "../types/library";
+import { ProductFormData } from "../types/types";
 
 export const foodLibraryApi = {
     baseKey: 'foods-library',

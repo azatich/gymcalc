@@ -8,7 +8,7 @@ import { useDeleteFoodLibraryMutation } from "../hooks/useDeleteFoodLibraryMutat
 import { useState } from "react";
 import FoodListsSkeleton from "./FoodListsSkeleton";
 import EditProductItem from "./EditProductItem";
-import { Product } from "../types/library";
+import { Product } from "../types/types";
 import DeleteProductItem from "./DeleteProductItem";
 
 interface ProductListsProps {
