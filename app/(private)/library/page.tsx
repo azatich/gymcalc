@@ -33,9 +33,6 @@ const Library = () => {
     ];
   }, [data, foodCategories]);
 
-  console.log(availableCategoriesWithAll);
-  
-
   return (
     <div className="space-y-6">
       <AddProductItem />
