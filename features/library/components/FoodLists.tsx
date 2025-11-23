@@ -1,22 +1,11 @@
 "use client";
 
 import { useMemo } from "react";
-import { Button } from "@/components/ui/button";
-import { Loader2, Trash2 } from "lucide-react";
-import { categories } from "../constants";
-import { useDeleteFoodLibraryMutation } from "../hooks/useDeleteFoodLibraryMutation";
-import { useState } from "react";
 import FoodListsSkeleton from "./FoodListsSkeleton";
 import EditProductItem from "./EditProductItem";
-import { Product } from "../types/types";
+import { ProductListsProps } from "../types";
 import DeleteProductItem from "./DeleteProductItem";
-
-interface ProductListsProps {
-  searchQuery: string;
-  selectedCategory: string;
-  data?: Product[];
-  isLoading: boolean;
-}
+import { useFoodCategoryQuery } from "@/features/food_category/hooks/useFoodCategoryQuery";
 
 const ProductLists = ({
   searchQuery,
@@ -25,13 +14,15 @@ const ProductLists = ({
   isLoading,
 }: ProductListsProps) => {
 
+  const { data: foodCategories} = useFoodCategoryQuery()
+
   const filteredData = useMemo(() => {
     if (!data) return [];
 
     return data.filter((product) => {
       const matchesCategory =
         selectedCategory === "all" ||
-        product.category.toLowerCase() === selectedCategory.toLowerCase();
+        product.category_id === selectedCategory.toLowerCase();
 
       const matchesSearch =
         searchQuery === "" ||
@@ -70,20 +61,12 @@ const ProductLists = ({
             <div className="flex-1">
               <div className="flex items-center gap-2 mb-1">
                 <span className="text-xl">
-                  {categories.map(
-                    (category) =>
-                      category.value.toLowerCase() ===
-                        product.category.toLowerCase() && category.emoji
-                  )}
+                  {foodCategories?.map((category) => category.id === product.category_id && category.category_emoji)}
                 </span>
                 <h3 className="text-lg">{product.name}</h3>
               </div>
               <div className="text-sm text-gray-500">
-                {categories.map(
-                  (category) =>
-                    category.value.toLocaleLowerCase() ===
-                      product.category.toLocaleLowerCase() && category.label
-                )}{" "}
+                {foodCategories?.map((category) => category.id === product.category_id && category.category_name)}
                 • {product.portion}
               </div>
             </div>

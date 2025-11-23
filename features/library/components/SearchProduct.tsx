@@ -9,14 +9,13 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Search } from "lucide-react";
-import { categories } from "../constants";
 
 interface SearchProductProps {
   searchQuery: string;
   onSearchChange: (query: string) => void;
   selectedCategory: string;
   onCategoryChange: (category: string) => void;
-  availableCategories: { value: string; label: string; emoji: string }[];
+  availableCategories: { id: string; category_name: string; category_emoji: string }[];
 }
 
 const SearchProduct = ({
@@ -47,10 +46,10 @@ const SearchProduct = ({
             {availableCategories.map((cat) => (
               <SelectItem
                 className="hover:bg-black hover:text-white transition-colors duration-200"
-                key={cat.value}
-                value={cat.value}
+                key={cat.id}
+                value={cat.id}
               >
-                {cat.emoji} {cat.label}
+                {cat.category_emoji} {cat.category_name}
               </SelectItem>
             ))}
           </SelectContent>

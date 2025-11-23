@@ -8,13 +8,13 @@ export interface Product {
   fat_per_100g: number;
   created_at: string;
   updated_at: string;
-  category: ProductCategory;
+  category_id: string;
   portion: string;
 }
 
 export interface ProductFormData {
   name: string;
-  category: ProductCategory;
+  category_id: string;
   portion: string;
   calories: number;
   proteins: number;
@@ -22,24 +22,9 @@ export interface ProductFormData {
   carbs: number;
 }
 
-export type ProductCategory =
-  | "meat"
-  | "poultry"
-  | "fish"
-  | "seafood"
-  | "dairy"
-  | "eggs"
-  | "grains"
-  | "pasta"
-  | "bread"
-  | "vegetables"
-  | "fruits"
-  | "nuts"
-  | "seeds"
-  | "legumes"
-  | "oils"
-  | "sweets"
-  | "beverages"
-  | "herbs_spices"
-  | "other";
-
+export interface ProductListsProps {
+  searchQuery: string;
+  selectedCategory: string;
+  data?: Product[];
+  isLoading: boolean;
+}

@@ -10,8 +10,8 @@ export const validateProductAddForm = <T extends Record<string, string>>(
     newErrors.name = "Название продукта обязательно";
   }
 
-  if (!formData.category) {
-    newErrors.category = "Категория обязательна";
+  if (!formData.category_id) {
+    newErrors.category_id = "Категория обязательна";
   }
 
   if (!formData.portion.trim()) {

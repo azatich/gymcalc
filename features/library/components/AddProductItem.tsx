@@ -19,17 +19,18 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { categories } from "../constants";
 import { useFoodLibraryMutation } from "../hooks/useFoodLibraryMutation";
 import { createTextChangeHandler } from "@/lib/useFormHandlers";
 import { validateProductAddForm } from "@/lib/validationProductAddForm";
+import { useFoodCategoryQuery } from "@/features/food_category/hooks/useFoodCategoryQuery";
 
 const AddProductItem = () => {
   const [showAddModal, setShowAddModal] = useState(false);
+  const { data: foodCategories } = useFoodCategoryQuery();
 
   const [formData, setFormData] = useState({
     name: "",
-    category: "",
+    category_id: "",
     portion: "",
     calories: "",
     proteins: "",
@@ -51,7 +52,7 @@ const AddProductItem = () => {
       setShowAddModal(false);
       setFormData({
         name: "",
-        category: "",
+        category_id: "",
         portion: "",
         calories: "",
         proteins: "",
@@ -65,10 +66,9 @@ const AddProductItem = () => {
   const handleTextChange = createTextChangeHandler(formData, setFormData, errors, setErrors)
 
   const handleCategoryChange = (value: string) => {
-    setFormData({ ...formData, category: value });
-    // Очищаем ошибку при изменении поля
-    if (errors.category) {
-      setErrors({ ...errors, category: "" });
+    setFormData({ ...formData, category_id: value });
+    if (errors.category_id) {
+      setErrors({ ...errors, category_id: "" });
     }
   };
 
@@ -78,7 +78,7 @@ const AddProductItem = () => {
       // Сбрасываем форму и ошибки при закрытии модалки
       setFormData({
         name: "",
-        category: "",
+        category_id: "",
         portion: "",
         calories: "",
         proteins: "",
@@ -138,12 +138,12 @@ const AddProductItem = () => {
                     Категория
                   </Label>
                   <Select
-                    value={formData.category}
+                    value={formData.category_id}
                     onValueChange={handleCategoryChange}
                   >
                     <SelectTrigger
                       className={`h-14 rounded-xl ${
-                        errors.category
+                        errors.category_id
                           ? "border-red-500 focus:border-red-500"
                           : ""
                       }`}
@@ -151,15 +151,13 @@ const AddProductItem = () => {
                       <SelectValue placeholder="Выберите категорию" />
                     </SelectTrigger>
                     <SelectContent className="bg-white">
-                      {categories
-                        .filter((cat) => cat.value !== "all")
-                        .map((cat) => (
+                      {foodCategories?.map((cat) => (
                           <SelectItem
                             className="hover:bg-black hover:text-white transition-colors duration-200"
-                            key={cat.value}
-                            value={cat.value}
+                            key={cat.id}
+                            value={cat.id}
                           >
-                            {cat.emoji} {cat.label}
+                            {cat.category_name} {cat.category_emoji}
                           </SelectItem>
                         ))}
                     </SelectContent>
@@ -169,6 +167,7 @@ const AddProductItem = () => {
                   )}
                 </div>
 
+                  {/*  Порция */}
                 <div className="space-y-2">
                   <Label htmlFor="modal-portion" className="text-base">
                     Порция
@@ -193,6 +192,8 @@ const AddProductItem = () => {
                 </div>
               </div>
 
+
+                  {/*  КБЖУ */}
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="modal-calories" className="text-base">

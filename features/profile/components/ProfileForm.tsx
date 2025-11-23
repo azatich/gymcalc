@@ -2,7 +2,7 @@
 
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Save, Target, User } from "lucide-react";
+import { Loader2, Save, Target, User } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -11,23 +11,47 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import Header from "./Header";
-import { useState } from "react";
-import { ProfileFormData, UserActivityLevel, UserGoal } from "../types/types";
+import { useEffect, useState } from "react";
+import { ProfileFormData, UserActivityLevel, UserGoal } from "../types";
 import { Button } from "@/components/ui/button";
 import { createTextChangeHandler } from "@/lib/useFormHandlers";
 import { validateProfileForm } from "@/lib/validationProfileForm";
+import { useProfileFormMutation } from "../hooks/useProfileFormMutation";
+import { useProfileQuery } from "../hooks/useProfileQuery";
+import CalculatedStats from "./CalculatedStats";
+import MacrosRecommendation from "./MacrosRecommendation";
+import { activityLabels, goalLabels } from "../constants/constants";
 
 const ProfileForm = () => {
+  const updateProfile = useProfileFormMutation();
+  const { data: userProfileData, isPending: isLoadingUserData } =
+    useProfileQuery();
+
   const [formData, setFormData] = useState<ProfileFormData>({
     name: "",
     age: 0,
-    gender: "male",
+    gender: "",
     height: 0,
     weight: 0,
-    activity_level: "sedentary",
-    goal: "loss",
+    activity_level: "",
+    goal: "",
   });
   const [errors, setErrors] = useState<Record<any, string>>({});
+
+  useEffect(() => {
+    if (userProfileData) {
+      const newFormData = {
+        name: userProfileData.full_name || "",
+        age: userProfileData.age || 0,
+        gender: userProfileData.gender || "",
+        height: userProfileData.height || 0,
+        weight: userProfileData.weight || 0,
+        activity_level: userProfileData.activity_level || "",
+        goal: userProfileData.goal || "",
+      };
+      setFormData(newFormData);
+    }
+  }, [userProfileData]);
 
   const handleTextChange = createTextChangeHandler(
     formData,
@@ -36,12 +60,25 @@ const ProfileForm = () => {
     setErrors
   );
 
-  const handleSubmit = async () => {
+  const handleSubmit = () => {
     if (!validateProfileForm(formData, setErrors)) {
       return;
     }
-    console.log("Submitted form data: ", formData);
+    try {
+      updateProfile.mutate({ data: formData });
+    } catch (error) {}
   };
+
+  if (isLoadingUserData) {
+    return (
+      <div className="space-y-6">
+        <Header />
+        <div className="flex items-center justify-center min-h-[400px]">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-black"></div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -88,9 +125,7 @@ const ProfileForm = () => {
                     type="number"
                     id="age"
                     value={formData.age}
-                    onChange={(e) =>
-                      handleTextChange("age", e.target.value)
-                    }
+                    onChange={(e) => handleTextChange("age", e.target.value)}
                     placeholder="25"
                     className={`h-14 text-lg rounded-xl border-gray-200 pr-20 ${
                       errors.age ? "border-red-500 focus:border-red-500" : ""
@@ -113,15 +148,18 @@ const ProfileForm = () => {
                 </Label>
                 <Select
                   value={formData.gender}
-                  onValueChange={(value) =>
-                    setFormData({
-                      ...formData,
-                      gender: (value as "male") || "female",
-                    })
-                  }
+                  onValueChange={(value) => {
+                    if (value) {
+                      handleTextChange("gender", value);
+                    }
+                  }}
                 >
                   <SelectTrigger className="h-14 text-lg rounded-xl border-gray-200">
-                    <SelectValue />
+                    <SelectValue placeholder="Выберите пол">
+                      {formData.gender === "male" && "Мужской"}
+                      {formData.gender === "female" && "Женский"}
+                      {!formData.gender && "Выберите пол"}
+                    </SelectValue>
                   </SelectTrigger>
                   <SelectContent className="bg-white">
                     <SelectItem
@@ -152,13 +190,13 @@ const ProfileForm = () => {
                     type="number"
                     id="height"
                     value={formData.height}
-                    onChange={(e) => handleTextChange("height", e.target.value) }
+                    onChange={(e) => handleTextChange("height", e.target.value)}
                     placeholder="175"
                     className={`h-14 text-lg rounded-xl border-gray-200 pr-16 ${
                       errors.height ? "border-red-500 focus:border-red-500" : ""
                     }`}
                     min="100"
-                    step='0.5'
+                    step="0.5"
                     max="250"
                   />
                   <div className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500">
@@ -166,8 +204,8 @@ const ProfileForm = () => {
                   </div>
                 </div>
                 {errors.height && (
-                <p className="text-sm text-red-500">{errors.height}</p>
-              )}
+                  <p className="text-sm text-red-500">{errors.height}</p>
+                )}
               </div>
 
               <div className="space-y-2">
@@ -179,8 +217,7 @@ const ProfileForm = () => {
                     type="number"
                     id="weight"
                     value={formData.weight}
-                    onChange={(e) => handleTextChange('weight', e.target.value)
-                    }
+                    onChange={(e) => handleTextChange("weight", e.target.value)}
                     placeholder="75"
                     className={`h-14 text-lg rounded-xl border-gray-200 pr-16 ${
                       errors.weight ? "border-red-500 focus:border-red-500" : ""
@@ -194,8 +231,8 @@ const ProfileForm = () => {
                   </div>
                 </div>
                 {errors.weight && (
-                <p className="text-sm text-red-500">{errors.weight}</p>
-              )}
+                  <p className="text-sm text-red-500">{errors.weight}</p>
+                )}
               </div>
             </div>
           </div>
@@ -218,28 +255,50 @@ const ProfileForm = () => {
               </Label>
               <Select
                 value={formData.activity_level}
-                onValueChange={(value) =>
-                  setFormData({
-                    ...formData,
-                    activity_level: value as UserActivityLevel,
-                  })
-                }
+                onValueChange={(value) => {
+                  if (value) {
+                    handleTextChange("activity_level", value);
+                  }
+                }}
               >
                 <SelectTrigger className="h-14 text-lg rounded-xl border-gray-200">
-                  <SelectValue />
+                  <SelectValue placeholder="Выберите уровень активности">
+                    {formData.activity_level
+                      ? activityLabels[
+                          formData.activity_level as UserActivityLevel
+                        ]
+                      : "Выберите уровень активности"}
+                  </SelectValue>
                 </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="sedentary">Сидячий образ жизни</SelectItem>
-                  <SelectItem value="light">
+                <SelectContent className="bg-white">
+                  <SelectItem
+                    className="hover:bg-black hover:text-white"
+                    value="sedentary"
+                  >
+                    Сидячий образ жизни
+                  </SelectItem>
+                  <SelectItem
+                    className="hover:bg-black hover:text-white"
+                    value="light"
+                  >
                     Легкая активность (1-3 раза в неделю)
                   </SelectItem>
-                  <SelectItem value="moderate">
+                  <SelectItem
+                    className="hover:bg-black hover:text-white"
+                    value="moderate"
+                  >
                     Умеренная активность (3-5 раз в неделю)
                   </SelectItem>
-                  <SelectItem value="active">
+                  <SelectItem
+                    className="hover:bg-black hover:text-white"
+                    value="active"
+                  >
                     Высокая активность (6-7 раз в неделю)
                   </SelectItem>
-                  <SelectItem value="veryActive">
+                  <SelectItem
+                    className="hover:bg-black hover:text-white"
+                    value="veryActive"
+                  >
                     Очень высокая (2 раза в день)
                   </SelectItem>
                 </SelectContent>
@@ -253,32 +312,66 @@ const ProfileForm = () => {
               </Label>
               <Select
                 value={formData.goal}
-                onValueChange={(value) =>
-                  setFormData({ ...formData, goal: value as UserGoal })
-                }
+                onValueChange={(value) => {
+                  if (value) {
+                    handleTextChange("goal", value);
+                  }
+                }}
               >
                 <SelectTrigger className="h-14 text-lg rounded-xl border-gray-200">
-                  <SelectValue />
+                  <SelectValue placeholder="Выберите цель">
+                    {formData.goal
+                      ? goalLabels[formData.goal as UserGoal]
+                      : "Выберите цель"}
+                  </SelectValue>
                 </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="loss">Снижение веса</SelectItem>
-                  <SelectItem value="maintain">Поддержание веса</SelectItem>
-                  <SelectItem value="gain">Набор массы</SelectItem>
+                <SelectContent className="bg-white">
+                  <SelectItem
+                    className="hover:bg-black hover:text-white"
+                    value="loss"
+                  >
+                    Снижение веса
+                  </SelectItem>
+                  <SelectItem
+                    className="hover:bg-black hover:text-white"
+                    value="maintain"
+                  >
+                    Поддержание веса
+                  </SelectItem>
+                  <SelectItem
+                    className="hover:bg-black hover:text-white"
+                    value="gain"
+                  >
+                    Набор массы
+                  </SelectItem>
                 </SelectContent>
               </Select>
             </div>
           </div>
         </div>
 
+        {userProfileData && (
+          <CalculatedStats userProfileData={userProfileData} />
+        )}
+        {userProfileData && (
+          <MacrosRecommendation userProfileData={userProfileData} />
+        )}
+
         <div className="sticky bottom-24 md:bottom-6">
           <Button
             type="button"
             onClick={handleSubmit}
-            className="w-full bg-black text-white    h-14 text-lg rounded-2xl shadow-lg hover:shadow-xl transition-all"
+            disabled={updateProfile.isPending}
+            className="w-full bg-black text-white disabled:bg-black/80 h-14 text-lg rounded-2xl shadow-lg hover:shadow-xl transition-all"
             size="lg"
           >
-            <Save className="w-5 h-5 mr-2" />
-            Сохранить
+            {updateProfile.isPending ? (
+              <Loader2 className="animate-spin" />
+            ) : (
+              <>
+                <Save className="w-5 h-5 mr-2" /> Сохранить
+              </>
+            )}
           </Button>
         </div>
       </form>

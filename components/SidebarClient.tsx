@@ -67,12 +67,6 @@ export default function SidebarClient({ user }: { user: UserData }) {
             })}
             <LoginButton />
           </nav>
-
-          <div className="bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-2xl p-3 text-white">
-            <div className="text-sm text-indigo-200">Дневная норма</div>
-            <div className="text-2xl">2000</div>
-            <div className="text-sm text-indigo-200">калорий</div>
-          </div>
         </aside>
       </div>
 

@@ -19,24 +19,25 @@ import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Edit2, Loader2 } from "lucide-react";
-import { categories } from "../constants";
-import { Product, ProductCategory, ProductFormData } from "../types/types";
-import { useUpdateFoodFromLibraryMutation } from "../hooks/useUpdateFoodFromLibraryMutation";
+import { Product, ProductFormData } from "../types";
+import { useUpdateFoodLibraryMutation } from "../hooks/useUpdateFoodLibraryMutation";
+import { useFoodCategoryQuery } from "@/features/food_category/hooks/useFoodCategoryQuery";
 
-const EditProductItem = ({ product }: {product: Product}) => {
+const EditProductItem = ({ product }: { product: Product }) => {
   const [showEditProductModal, setShowEditProductModal] = useState(false);
-  const updateFoodFromLib = useUpdateFoodFromLibraryMutation()
-  
+  const updateFoodFromLib = useUpdateFoodLibraryMutation();
+  const { data: foodCategories } = useFoodCategoryQuery();
+
   const [formData, setFormData] = useState<ProductFormData>({
     name: product.name,
-    category: product.category,
+    category_id: product.category_id,
     portion: product.portion,
     calories: product.calories_per_100g,
     proteins: product.proteins_per_100g,
     fats: product.fat_per_100g,
     carbs: product.carbs_per_100g,
   });
-  
+
   const handleSubmit = async () => {
     try {
       await updateFoodFromLib.mutateAsync({
@@ -44,10 +45,8 @@ const EditProductItem = ({ product }: {product: Product}) => {
         data: formData,
       });
       setShowEditProductModal(false);
-    } catch (error) {
-    }
+    } catch (error) {}
   };
-  
 
   return (
     <Dialog open={showEditProductModal} onOpenChange={setShowEditProductModal}>
@@ -63,9 +62,7 @@ const EditProductItem = ({ product }: {product: Product}) => {
 
       <DialogContent className="bg-white border-none max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle className="text-2xl">
-            Изменить продукт
-          </DialogTitle>
+          <DialogTitle className="text-2xl">Изменить продукт</DialogTitle>
         </DialogHeader>
 
         <div className="space-y-5">
@@ -91,26 +88,24 @@ const EditProductItem = ({ product }: {product: Product}) => {
                 Категория
               </Label>
               <Select
-                value={formData.category}
+                value={formData.category_id}
                 onValueChange={(value) =>
-                  setFormData({ ...formData, category: value as ProductCategory })
+                  setFormData({ ...formData, category_id: value })
                 }
               >
                 <SelectTrigger className="h-14 rounded-xl">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent className="bg-white">
-                  {categories
-                    .filter((cat) => cat.value !== "all")
-                    .map((cat) => (
-                      <SelectItem
-                        className="hover:bg-black hover:text-white transition-colors"
-                        key={cat.value}
-                        value={cat.value}
-                      >
-                        {cat.emoji} {cat.label}
-                      </SelectItem>
-                    ))}
+                  {foodCategories?.map((cat) => (
+                    <SelectItem
+                      className="hover:bg-black hover:text-white transition-colors duration-200"
+                      key={cat.id}
+                      value={cat.id}
+                    >
+                      {cat.category_name} {cat.category_emoji}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             </div>
@@ -146,7 +141,10 @@ const EditProductItem = ({ product }: {product: Product}) => {
                   className="h-14 text-lg rounded-xl pr-16"
                   value={formData.calories}
                   onChange={(e) =>
-                    setFormData({ ...formData, calories: Number(e.target.value )})
+                    setFormData({
+                      ...formData,
+                      calories: Number(e.target.value),
+                    })
                   }
                 />
                 <div className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500">
@@ -168,7 +166,10 @@ const EditProductItem = ({ product }: {product: Product}) => {
                   className="h-14 text-lg rounded-xl pr-16"
                   value={formData.proteins}
                   onChange={(e) =>
-                    setFormData({ ...formData, proteins: Number(e.target.value) })
+                    setFormData({
+                      ...formData,
+                      proteins: Number(e.target.value),
+                    })
                   }
                 />
                 <div className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500">
@@ -237,7 +238,11 @@ const EditProductItem = ({ product }: {product: Product}) => {
               onClick={handleSubmit}
               className="bg-black text-white text-lg h-14 rounded-xl shadow-md hover:bg-black/80 transition-colors duration-300 disabled:bg-black/80"
             >
-              {updateFoodFromLib.isPending ? <Loader2 className="animate-spin" />: 'Сохранить'}
+              {updateFoodFromLib.isPending ? (
+                <Loader2 className="animate-spin" />
+              ) : (
+                "Сохранить"
+              )}
             </Button>
           </div>
         </div>

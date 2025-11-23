@@ -22,6 +22,13 @@ export const validateProfileForm = <T extends Record<string, any>>(
     newErrors.weight = "Вес обьязательно";
   }
 
+  if (!formData.activity_level) {
+    newErrors.activity_level = "Уровень активности обьязательно";
+  }
+
+  if (!formData.goal) {
+    newErrors.goal = "Цель обьязательна";
+  }
   setErrors(newErrors);
   return Object.keys(newErrors).length === 0;
 };

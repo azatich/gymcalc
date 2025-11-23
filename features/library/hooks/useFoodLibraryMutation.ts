@@ -8,7 +8,7 @@ type FoodLibrary = {
   proteins: string;
   carbs: string;
   fats: string;
-  category: string;
+  category_id: string;
   portion: string;
 };
 

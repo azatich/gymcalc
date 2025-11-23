@@ -1,5 +1,5 @@
 import { api } from "@/lib/axios"
-import { ProductFormData } from "../types/types";
+import { ProductFormData } from "../types";
 
 export const foodLibraryApi = {
     baseKey: 'foods-library',
@@ -10,7 +10,7 @@ export const foodLibraryApi = {
     },
 
     getAllFoodsFromLibrary: async () => {
-        const res = await api.get('/library/get');
+        const res = await api.get('/library');
         return res.data.data;
     },
 

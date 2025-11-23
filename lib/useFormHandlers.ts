@@ -6,11 +6,8 @@ export function createTextChangeHandler<T extends Record<string, any>>(
   errors: Record<keyof T, string>,
   setErrors: Dispatch<SetStateAction<Record<keyof T, string>>>
 ) {
-  return (field: keyof T, value: string) => {
-    setFormData({ ...formData, [field]: value });
-
-    if (errors[field]) {
-      setErrors({ ...errors, [field]: "" });
-    }
+  return (field: keyof T, value: any) => {
+    setFormData((prev) => ({ ...prev, [field]: value }));
+    setErrors((prev) => ({ ...prev, [field]: "" }));
   };
 }

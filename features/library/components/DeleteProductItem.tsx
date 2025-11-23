@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Loader2, Trash2 } from "lucide-react";
-import React, { useState } from "react";
+import { useState } from "react";
 import { useDeleteFoodLibraryMutation } from "../hooks/useDeleteFoodLibraryMutation";
 
 const DeleteProductItem = ({ id }: { id: string }) => {

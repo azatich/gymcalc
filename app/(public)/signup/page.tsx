@@ -1,4 +1,5 @@
 import { SignUpForm } from "./components/SignUpForm"
+import { ThemeToggle } from '@/components/ThemeToggle'
 
 const meta = () => {
   
