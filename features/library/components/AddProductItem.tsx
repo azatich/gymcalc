@@ -237,7 +237,7 @@ const AddProductItem = () => {
                       id="modal-protein"
                       placeholder="0"
                       className={`h-14 text-lg rounded-xl pr-16 ${
-                        errors.protein
+                        errors.proteins
                           ? "border-red-500 focus:border-red-500"
                           : ""
                       }`}

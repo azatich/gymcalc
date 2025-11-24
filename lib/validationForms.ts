@@ -22,8 +22,8 @@ export const validateProductAddForm = <T extends Record<string, any>>(
     newErrors.calories = "Калории обьязательны";
   }
 
-  if (!formData.protein) {
-    newErrors.protein = "Белки обьязательны";
+  if (!formData.proteins) {
+    newErrors.proteins = "Белки обьязательны";
   }
   if (!formData.fats) {
     newErrors.fats = "Жиры обьязательны";
