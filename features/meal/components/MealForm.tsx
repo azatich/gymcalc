@@ -22,6 +22,10 @@ import { useFoodLibraryQuery } from "@/features/library/hooks/useFoodLibraryQuer
 import { Product } from "@/features/library/types";
 import { Loader2, Plus, X } from "lucide-react";
 import { useMemo, useState } from "react";
+import { getAvailableCategories } from "@/lib/getAvailableCategories";
+import { useMealMutation } from "../hooks/useMealMutation";
+import { createTextChangeHandler } from "@/lib/useFormHandlers";
+import { validateMealForm } from "@/lib/validationForms";
 
 const MealForm = () => {
   const [selectedCategory, setSelectedCategory] = useState("all");
@@ -29,41 +33,29 @@ const MealForm = () => {
   const [showPortionModal, setShowPortionModal] = useState(false);
   const [portionMultiplier, setPortionMultiplier] = useState("1");
   const [showLibraryDialog, setShowLibraryDialog] = useState(false);
+  const [errors, setErrors] = useState<Record<string, string>>({});
+
+  const addMeal = useMealMutation();
 
   const [formData, setFormData] = useState({
     name: "",
     date: "",
     mealtime: "",
     portion: "",
-    calories: "",
-    protein: "",
-    fats: "",
-    carbs: "",
+    calories: 0,
+    protein: 0,
+    fats: 0,
+    carbs: 0,
   });
 
   const { data: libraryProducts, isLoading: isLoadingLibProducts } =
     useFoodLibraryQuery();
   const { data: foodCategories } = useFoodCategoryQuery();
 
-  const availableCategoriesWithAll = useMemo(() => {
-    if (!libraryProducts || !foodCategories)
-      return [
-        { id: "all", category_name: "Все категории", category_emoji: "🍽️" },
-      ];
-
-    const uniqueCategoryIds = [
-      ...new Set(libraryProducts.map((item) => item.category_id)),
-    ];
-
-    const availableCategories = uniqueCategoryIds
-      .map((catId) => foodCategories.find((c) => c.id === catId))
-      .filter((cat): cat is NonNullable<typeof cat> => cat !== undefined);
-
-    return [
-      { id: "all", category_name: "Все категории", category_emoji: "🍽️" },
-      ...availableCategories,
-    ];
-  }, [libraryProducts, foodCategories]);
+  const availableCategoriesWithAll = useMemo(
+    () => getAvailableCategories(libraryProducts, foodCategories),
+    [libraryProducts, foodCategories]
+  );
 
   const filteredLibraryProducts = useMemo(() => {
     if (!libraryProducts) return [];
@@ -77,6 +69,13 @@ const MealForm = () => {
     );
   }, [libraryProducts, selectedCategory]);
 
+  const handleTextChange = createTextChangeHandler(
+    formData,
+    setFormData,
+    errors,
+    setErrors
+  );
+
   const handleProductSelect = (product: Product) => {
     setSelectedProduct(product);
     setShowLibraryDialog(false);
@@ -84,8 +83,19 @@ const MealForm = () => {
   };
 
   const handleSubmit = () => {
-    console.log("Отправка данных:", formData);
-    // Здесь логика отправки на сервер
+    if (!validateMealForm(formData, setErrors)) return;
+    addMeal.mutate(formData);
+
+    setFormData({
+      name: "",
+      date: "",
+      mealtime: "",
+      portion: "",
+      calories: 0,
+      protein: 0,
+      fats: 0,
+      carbs: 0,
+    });
   };
 
   const handleSelectLibraryProduct = () => {
@@ -98,12 +108,10 @@ const MealForm = () => {
       date: formData.date,
       mealtime: formData.mealtime,
       portion: `${selectedProduct.portion} × ${multiplier}`,
-      calories: Math.round(
-        selectedProduct.calories_per_100g * multiplier
-      ).toString(),
-      protein: (selectedProduct.proteins_per_100g * multiplier).toFixed(1),
-      fats: (selectedProduct.fat_per_100g * multiplier).toFixed(1),
-      carbs: (selectedProduct.carbs_per_100g * multiplier).toFixed(1),
+      calories: Math.round(selectedProduct.calories_per_100g * multiplier),
+      protein: selectedProduct.proteins_per_100g * multiplier,
+      fats: selectedProduct.fat_per_100g * multiplier,
+      carbs: selectedProduct.carbs_per_100g * multiplier,
     });
 
     setShowPortionModal(false);
@@ -120,15 +128,15 @@ const MealForm = () => {
       ) : (
         <Button
           type="button"
-          variant="outline"
-          className="w-full h-16 rounded-2xl border-2 text-lg border-gray-200 hover:bg-gray-100"
+          variant="destructive"
+          className="w-full h-16 rounded-2xl border-2 text-lg bg-indigo-800 hover:bg-indigo-500"
           onClick={() => setShowLibraryDialog(true)}
         >
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
               <span className="text-xl">📚</span>
             </div>
-            <div className="text-left text-gray-700">
+            <div className="text-left text-white">
               <div>Выбрать из моей библиотеки</div>
               <div className="text-sm text-muted-foreground">
                 {libraryProducts && libraryProducts.length > 0 && (
@@ -158,9 +166,9 @@ const MealForm = () => {
               </Label>
               <Select
                 value={formData.mealtime}
-                onValueChange={(value) =>
-                  setFormData({ ...formData, mealtime: value })
-                }
+                onValueChange={(value) => {
+                  handleTextChange("mealtime", value);
+                }}
               >
                 <SelectTrigger className="h-14 text-lg rounded-xl border-gray-200">
                   <SelectValue placeholder="Выберите прием пищи" />
@@ -192,6 +200,9 @@ const MealForm = () => {
                   </SelectItem>
                 </SelectContent>
               </Select>
+              {errors.mealtime && (
+                <p className="text-sm text-red-500">{errors.mealtime}</p>
+              )}
             </div>
 
             <div className="space-y-2">
@@ -207,10 +218,13 @@ const MealForm = () => {
                   onChange={(e) => {
                     const time = e.target.value;
                     const today = new Date().toISOString().slice(0, 10);
-                    const fullDateTime = `${today}T${time}`
-                    setFormData({ ...formData, date: fullDateTime });
+                    const fullDateTime = `${today}T${time}`;
+                    handleTextChange("date", fullDateTime);
                   }}
                 />
+                {errors.date && (
+                  <p className="text-sm text-red-500">{errors.date}</p>
+                )}
               </div>
             </div>
           </div>
@@ -230,10 +244,11 @@ const MealForm = () => {
                 placeholder="Например: Куриная грудка"
                 className="h-14 text-lg rounded-xl border-gray-200"
                 value={formData.name}
-                onChange={(e) =>
-                  setFormData({ ...formData, name: e.target.value })
-                }
+                onChange={(e) => handleTextChange("name", e.target.value)}
               />
+              {errors.name && (
+                <p className="text-sm text-red-500">{errors.name}</p>
+              )}
             </div>
 
             <div className="space-y-2">
@@ -246,10 +261,11 @@ const MealForm = () => {
                 placeholder="Например: 100г"
                 className="h-14 text-lg rounded-xl border-gray-200"
                 value={formData.portion}
-                onChange={(e) =>
-                  setFormData({ ...formData, portion: e.target.value })
-                }
+                onChange={(e) => handleTextChange("portion", e.target.value)}
               />
+              {errors.portion && (
+                <p className="text-sm text-red-500">{errors.portion}</p>
+              )}
             </div>
           </div>
         </div>
@@ -269,9 +285,12 @@ const MealForm = () => {
                 className="h-14 text-lg rounded-xl border-gray-200"
                 value={formData.calories}
                 onChange={(e) =>
-                  setFormData({ ...formData, calories: e.target.value })
+                  handleTextChange("calories", Number(e.target.value))
                 }
               />
+              {errors.calories && (
+                <p className="text-sm text-red-500">{errors.calories}</p>
+              )}
             </div>
 
             <div className="space-y-2">
@@ -285,9 +304,12 @@ const MealForm = () => {
                 className="h-14 text-lg rounded-xl border-gray-200"
                 value={formData.protein}
                 onChange={(e) =>
-                  setFormData({ ...formData, protein: e.target.value })
+                  handleTextChange("protein", Number(e.target.value))
                 }
               />
+              {errors.protein && (
+                <p className="text-sm text-red-500">{errors.protein}</p>
+              )}
             </div>
 
             <div className="space-y-2">
@@ -301,9 +323,12 @@ const MealForm = () => {
                 className="h-14 text-lg rounded-xl border-gray-200"
                 value={formData.fats}
                 onChange={(e) =>
-                  setFormData({ ...formData, fats: e.target.value })
+                  handleTextChange("fats", Number(e.target.value))
                 }
               />
+              {errors.fats && (
+                <p className="text-sm text-red-500">{errors.fats}</p>
+              )}
             </div>
 
             <div className="space-y-2">
@@ -317,9 +342,12 @@ const MealForm = () => {
                 className="h-14 text-lg rounded-xl border-gray-200"
                 value={formData.carbs}
                 onChange={(e) =>
-                  setFormData({ ...formData, carbs: e.target.value })
+                  handleTextChange("carbs", Number(e.target.value))
                 }
               />
+              {errors.carbs && (
+                <p className="text-sm text-red-500">{errors.carbs}</p>
+              )}
             </div>
           </div>
         </div>
@@ -327,19 +355,25 @@ const MealForm = () => {
         {/* Submit Button */}
         <Button
           type="button"
-          className="w-full h-14 rounded-xl text-lg bg-black text-white hover:bg-black/80"
+          className="w-full h-14 rounded-xl text-lg bg-indigo-800 hover:bg-indigo-500 text-white transition-colors duration-200"
           size="lg"
+          disabled={addMeal.isPending}
           onClick={handleSubmit}
         >
-          <Plus className="w-5 h-5 mr-2" />
-          Добавить продукт
+          {addMeal.isPending ? (
+            <Loader2 className="animate-spin mr-2" />
+          ) : (
+            <span className="flex items-center">
+              <Plus className="w-5 h-5 mr-2" /> Добавить
+            </span>
+          )}
         </Button>
       </form>
 
       {/* Library Dialog */}
       {showLibraryDialog && (
         <Dialog open={showLibraryDialog} onOpenChange={setShowLibraryDialog}>
-          <DialogContent className="max-w-4xl max-h-[80vh] bg-white">
+          <DialogContent className="max-w-4xl max-h-[80vh] bg-white border-none">
             <DialogHeader>
               <DialogTitle className="text-2xl md:text-3xl">
                 Моя библиотека продуктов
@@ -355,8 +389,8 @@ const MealForm = () => {
                   onClick={() => setSelectedCategory(category.id)}
                   className={`px-4 py-2 rounded-xl whitespace-nowrap transition-all ${
                     selectedCategory === category.id
-                      ? "bg-black text-white"
-                      : "bg-gray-300 hover:bg-gray-400"
+                      ? "bg-indigo-800 text-white"
+                      : "bg-gray-100 hover:bg-gray-200"
                   }`}
                 >
                   <div className="flex items-center gap-2">
@@ -368,7 +402,7 @@ const MealForm = () => {
             </div>
 
             {/* Products List */}
-            <ScrollArea className="h-[400px] rounded-xl border border-gray-300">
+            <ScrollArea className="h-[400px] rounded-t-xl border border-gray-300">
               {filteredLibraryProducts.length > 0 ? (
                 <div className="divide-y divide-gray-300">
                   {filteredLibraryProducts.map((product) => {
@@ -381,7 +415,7 @@ const MealForm = () => {
                         key={product.id}
                         type="button"
                         onClick={() => handleProductSelect(product)}
-                        className="w-full text-left p-4 hover:bg-gray-200 transition-colors"
+                        className="w-full text-left p-4 hover:bg-gray-100 transition-colors"
                       >
                         <div className="flex items-start justify-between">
                           <div className="flex-1">
@@ -391,14 +425,14 @@ const MealForm = () => {
                               </span>
                               <h3 className="font-medium">{product.name}</h3>
                             </div>
-                            <div className="text-sm text-gray-500 mb-2">
+                            <div className="text-sm font-semibold mb-2">
                               {product.portion}
                             </div>
-                            <div className="flex gap-3 text-xs">
+                            <div className="flex gap-3 text-sm">
                               <span>{product.calories_per_100g} ккал</span>
-                              <span>Б: {product.proteins_per_100g}г</span>
-                              <span>Ж: {product.fat_per_100g}г</span>
-                              <span>У: {product.carbs_per_100g}г</span>
+                              <span>Б: {product.proteins_per_100g} г</span>
+                              <span>Ж: {product.fat_per_100g} г</span>
+                              <span>У: {product.carbs_per_100g} г</span>
                             </div>
                           </div>
                         </div>
@@ -536,10 +570,11 @@ const MealForm = () => {
                   setShowPortionModal(false);
                   setPortionMultiplier("1");
                   setSelectedProduct(null);
+                  setShowLibraryDialog(true);
                 }}
-                className="h-14 text-lg rounded-xl border-gray-300"
+                className="h-14 text-lg rounded-xl border-gray-300 hover:bg-gray-100"
               >
-                Отмена
+                Назад
               </Button>
               <Button
                 type="button"

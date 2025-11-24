@@ -37,7 +37,7 @@ export default function SidebarClient({ user }: { user: UserData }) {
         <aside className="fixed left-0 top-0 h-screen w-80 bg-white border-r border-gray-200 p-8 flex flex-col">
           <div className="mb-4">
             <div className="flex items-center gap-3 mb-2">
-              <div className="w-10 h-10 bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-xl flex items-center justify-center text-white text-xl">
+              <div className="w-10 h-10 bg-linear-to-br from-indigo-500 to-indigo-600 rounded-xl flex items-center justify-center text-white text-xl">
                 G
               </div>
               <h1 className="text-3xl">GymCalc</h1>
