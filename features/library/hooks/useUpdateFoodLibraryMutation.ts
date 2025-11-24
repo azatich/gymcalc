@@ -2,7 +2,6 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { foodLibraryApi } from "../api/api";
 import { toast } from "sonner";
 import { ProductFormData } from "../types";
-import { food_category } from "@/features/food_category/api/api";
 
 export const useUpdateFoodLibraryMutation = () => {
   const queryClient = useQueryClient();

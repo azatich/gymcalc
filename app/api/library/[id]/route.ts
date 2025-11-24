@@ -71,14 +71,14 @@ export async function PATCH(
     return NextResponse.json({ error: "Missing product ID" }, { status: 400 });
   }
 
-  const { name, calories, protein, carbs, fats, category_id, portion } = body;
+  const { name, calories, proteins, carbs, fats, category_id, portion } = body;
 
   const { data, error } = await supabase
     .from("foods_library")
     .update({
       name,
       calories_per_100g: calories,
-      proteins_per_100g: protein,
+      proteins_per_100g: proteins,
       carbs_per_100g: carbs,
       fat_per_100g: fats,
       category_id,
