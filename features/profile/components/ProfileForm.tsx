@@ -303,6 +303,9 @@ const ProfileForm = () => {
                   </SelectItem>
                 </SelectContent>
               </Select>
+              {errors.activity_level && (
+                <p className="text-sm text-red-500">{errors.activity_level}</p>
+              )}
             </div>
 
             {/* Goal */}
@@ -346,6 +349,9 @@ const ProfileForm = () => {
                   </SelectItem>
                 </SelectContent>
               </Select>
+              {errors.goal && (
+                <p className="text-sm text-red-500">{errors.goal}</p>
+              )}
             </div>
           </div>
         </div>

@@ -7,6 +7,7 @@ import {
   calculateTDEE,
 } from "../lib/calculations";
 import { useState } from "react";
+import { Span } from "next/dist/trace";
 
 const CalculatedStats = ({
   userProfileData,
@@ -18,6 +19,15 @@ const CalculatedStats = ({
   const bmr = calculateBMR(weight, height, age, gender);
   const dailyCal = calculateTDEE(bmr, activity_level);
   const dailyCalWithGoal = applyGoalToCalories(dailyCal, goal);
+
+  const indexMassBody =
+    bmi < 18.5
+      ? "Недостаточный"
+      : bmi >= 18.5 && bmi < 25
+      ? "Нормальный"
+      : bmi >= 25 && bmi < 30
+      ? "Избыточный"
+      : "Ожирение";
 
   return (
     <div className="bg-linear-to-br from-indigo-500 to-indigo-600 rounded-3xl p-6 md:p-8 text-white shadow-lg">
@@ -31,18 +41,31 @@ const CalculatedStats = ({
       <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
         <div>
           <div className="text-sm text-indigo-200 mb-2">Индекс массы тела</div>
-          <div className="text-4xl mb-1">{bmi}</div>
+          <div className="text-4xl mb-1">
+            {!weight || !height ? (
+              <span className="text-lg">
+                Введите рост и вес для расчета ИМТ
+              </span>
+            ) : (
+              bmi
+            )}
+          </div>
           <div className="text-sm text-indigo-200">
-            {bmi < 18.5 && "Недостаточный"}
-            {bmi >= 18.5 && bmi < 25 && "Нормальный"}
-            {bmi >= 25 && bmi < 30 && "Избыточный"}
-            {bmi >= 30 && "Ожирение"}
+            {!weight || !height ? null : indexMassBody}
           </div>
         </div>
 
         <div>
           <div className="text-sm text-indigo-200 mb-2">БМС (BMR)</div>
-          <div className="text-4xl mb-1">{bmr}</div>
+          <div className="text-4xl mb-1">
+            {!bmr || bmr < 0 ? (
+              <span className="text-lg">
+                Введите рост и вес для расчета ИМТ
+              </span>
+            ) : (
+              bmr
+            )}
+          </div>
           <div className="text-sm text-indigo-200">ккал/день</div>
         </div>
 

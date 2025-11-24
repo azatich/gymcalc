@@ -29,7 +29,7 @@ const MacrosRecommendation = ({
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="bg-indigo-50 rounded-2xl p-5 text-center">
           <div className="text-3xl text-indigo-600 mb-2">
-            {Math.round(weight * 2)}г
+            {weight ? `${Math.round(weight * 2)}г` : "—"}
           </div>
           <div className="text-gray-700 mb-1">Белки</div>
           <div className="text-sm text-gray-600">2г на кг веса</div>
@@ -37,7 +37,7 @@ const MacrosRecommendation = ({
 
         <div className="bg-amber-50 rounded-2xl p-5 text-center">
           <div className="text-3xl text-amber-600 mb-2">
-            {Math.round(weight * 0.8)}г
+            {weight ? `${Math.round(weight * 0.8)}г` : "—"}
           </div>
           <div className="text-gray-700 mb-1">Жиры</div>
           <div className="text-sm text-gray-600">0.8г на кг веса</div>
@@ -45,13 +45,11 @@ const MacrosRecommendation = ({
 
         <div className="bg-green-50 rounded-2xl p-5 text-center">
           <div className="text-3xl text-green-600 mb-2">
-            {Math.round(
-              (dailyCalWithGoal -
-                weight * 2 * 4 -
-                weight * 0.8 * 9) /
-                4
-            )}
-            г
+            {!dailyCalWithGoal || !weight || !height
+              ? "—"
+              : `${Math.round(
+                  (dailyCalWithGoal - (weight * 2 * 4 + weight * 0.8 * 9)) / 4
+                )}г`}
           </div>
           <div className="text-gray-700 mb-1">Углеводы</div>
           <div className="text-sm text-gray-600">остаток калорий</div>
