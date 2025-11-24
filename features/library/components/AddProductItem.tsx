@@ -21,7 +21,7 @@ import {
 } from "@/components/ui/dialog";
 import { useFoodLibraryMutation } from "../hooks/useFoodLibraryMutation";
 import { createTextChangeHandler } from "@/lib/useFormHandlers";
-import { validateProductAddForm } from "@/lib/validationProductAddForm";
+import { validateProductAddForm } from "@/lib/validationForms";
 import { useFoodCategoryQuery } from "@/features/food_category/hooks/useFoodCategoryQuery";
 
 const AddProductItem = () => {
@@ -101,7 +101,7 @@ const AddProductItem = () => {
 
         <Dialog open={showAddModal} onOpenChange={handleCloseModal}>
           <DialogTrigger asChild>
-            <Button className="bg-black text-white flex items-center w-full md:w-auto h-12 px-6 rounded-xl shadow-md hover:bg-black/80 transition-colors duration-300">
+            <Button className="bg-indigo-800 hover:bg-indigo-500 text-white flex items-center w-full md:w-auto h-12 px-6 rounded-xl shadow-md transition-colors duration-200">
               <Plus className="w-5 h-5 mr-2" />
               Добавить продукт
             </Button>
@@ -325,7 +325,7 @@ const AddProductItem = () => {
                   type="button"
                   disabled={addFoodToLibrary.isPending}
                   onClick={handleSubmit}
-                  className="bg-black text-white disabled:bg-black/80 h-14 text-lg rounded-xl shadow-md hover:bg-black/80 transition-colors duration-300"
+                  className="bg-indigo-800 hover:bg-indigo-500 text-white h-14 text-lg rounded-xl shadow-md transition-colors duration-200"
                 >
                   {addFoodToLibrary.isPending ? (
                     <Loader2 className="animate-spin" />

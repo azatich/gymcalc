@@ -28,3 +28,13 @@ export interface ProductListsProps {
   data?: Product[];
   isLoading: boolean;
 }
+
+export type FormFoodLibrary = {
+  name: string;
+  calories: string;
+  proteins: string;
+  carbs: string;
+  fats: string;
+  category_id: string;
+  portion: string;
+};

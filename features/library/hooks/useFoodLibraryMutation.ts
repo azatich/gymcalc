@@ -1,22 +1,13 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { foodLibraryApi } from "../api/api";
 import { toast } from "sonner";
-
-type FoodLibrary = {
-  name: string;
-  calories: string;
-  proteins: string;
-  carbs: string;
-  fats: string;
-  category_id: string;
-  portion: string;
-};
+import { FormFoodLibrary } from "../types";
 
 export const useFoodLibraryMutation = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (food: FoodLibrary) => foodLibraryApi.addFoodToLibrary(food),
+    mutationFn: (food: FormFoodLibrary) => foodLibraryApi.addFoodToLibrary(food),
 
     onSuccess: async () => {
       await queryClient.invalidateQueries({

@@ -236,7 +236,7 @@ const EditProductItem = ({ product }: { product: Product }) => {
               type="button"
               disabled={updateFoodFromLib.isPending}
               onClick={handleSubmit}
-              className="bg-black text-white text-lg h-14 rounded-xl shadow-md hover:bg-black/80 transition-colors duration-300 disabled:bg-black/80"
+              className="bg-indigo-800 hover:bg-indigo-500 text-white text-lg h-14 rounded-xl shadow-md transition-colors duration-200"
             >
               {updateFoodFromLib.isPending ? (
                 <Loader2 className="animate-spin" />

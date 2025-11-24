@@ -15,12 +15,12 @@ import { useEffect, useState } from "react";
 import { ProfileFormData, UserActivityLevel, UserGoal } from "../types";
 import { Button } from "@/components/ui/button";
 import { createTextChangeHandler } from "@/lib/useFormHandlers";
-import { validateProfileForm } from "@/lib/validationProfileForm";
 import { useProfileFormMutation } from "../hooks/useProfileFormMutation";
 import { useProfileQuery } from "../hooks/useProfileQuery";
 import CalculatedStats from "./CalculatedStats";
 import MacrosRecommendation from "./MacrosRecommendation";
 import { activityLabels, goalLabels } from "../constants/constants";
+import { validateProfileForm } from "@/lib/validationForms";
 
 const ProfileForm = () => {
   const updateProfile = useProfileFormMutation();
@@ -362,7 +362,7 @@ const ProfileForm = () => {
             type="button"
             onClick={handleSubmit}
             disabled={updateProfile.isPending}
-            className="w-full bg-black text-white disabled:bg-black/80 h-14 text-lg rounded-2xl shadow-lg hover:shadow-xl transition-all"
+            className="w-full bg-indigo-800 hover:bg-indigo-500 text-white h-14 text-lg rounded-2xl shadow-lg hover:shadow-xl transition-all duration-200"
             size="lg"
           >
             {updateProfile.isPending ? (

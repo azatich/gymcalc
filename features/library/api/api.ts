@@ -1,11 +1,11 @@
 import { api } from "@/lib/axios"
-import { ProductFormData } from "../types";
+import { FormFoodLibrary, ProductFormData } from "../types";
 
 export const foodLibraryApi = {
     baseKey: 'foods-library',
 
-    addFoodToLibrary: async (food: any) => {
-        const res = await api.post('/library/add', food);
+    addFoodToLibrary: async (food: FormFoodLibrary) => {
+        const res = await api.post('/library', food);
         return res.data;
     },
 
