@@ -75,7 +75,7 @@ export default function SidebarClient({ user }: { user: UserData }) {
         <header className="fixed top-0 left-0 right-0 bg-white/80 backdrop-blur-lg border-b border-gray-200 px-5 py-4 z-20">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-lg flex items-center justify-center text-white">
+              <div className="w-8 h-8 bg-linear-to-br from-indigo-500 to-indigo-600 rounded-lg flex items-center justify-center text-white">
                 G
               </div>
               <h1 className="text-xl">GymCalc</h1>

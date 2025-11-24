@@ -20,7 +20,7 @@ const CalculatedStats = ({
   const dailyCalWithGoal = applyGoalToCalories(dailyCal, goal);
 
   return (
-    <div className="bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-3xl p-6 md:p-8 text-white shadow-lg">
+    <div className="bg-linear-to-br from-indigo-500 to-indigo-600 rounded-3xl p-6 md:p-8 text-white shadow-lg">
       <div className="flex items-center gap-3 mb-6">
         <div className="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center">
           <Calculator className="w-6 h-6 text-white" />
