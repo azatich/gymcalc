@@ -225,8 +225,8 @@ const MealForm = () => {
                     handleTextChange("time", e.target.value);
                   }}
                 />
-                {errors.date && (
-                  <p className="text-sm text-red-500">{errors.date}</p>
+                {errors.time && (
+                  <p className="text-sm text-red-500">{errors.time}</p>
                 )}
               </div>
             </div>
