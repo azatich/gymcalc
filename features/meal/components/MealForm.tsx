@@ -39,7 +39,7 @@ const MealForm = () => {
 
   const [formData, setFormData] = useState({
     name: "",
-    date: "",
+    time: "",
     mealtime: "",
     portion: "",
     calories: 0,
@@ -47,6 +47,9 @@ const MealForm = () => {
     fats: 0,
     carbs: 0,
   });
+
+  console.log(formData);
+  
 
   const { data: libraryProducts, isLoading: isLoadingLibProducts } =
     useFoodLibraryQuery();
@@ -88,7 +91,7 @@ const MealForm = () => {
 
     setFormData({
       name: "",
-      date: "",
+      time: "",
       mealtime: "",
       portion: "",
       calories: 0,
@@ -105,7 +108,7 @@ const MealForm = () => {
 
     setFormData({
       name: selectedProduct.name,
-      date: formData.date,
+      time: formData.time,
       mealtime: formData.mealtime,
       portion: `${selectedProduct.portion} × ${multiplier}`,
       calories: Math.round(selectedProduct.calories_per_100g * multiplier),
@@ -214,12 +217,9 @@ const MealForm = () => {
                   type="time"
                   id="time"
                   className="h-14 text-lg rounded-xl border-gray-200 pl-10"
-                  value={formData.date?.slice(11, 16) || ""}
+                  value={formData.time}
                   onChange={(e) => {
-                    const time = e.target.value;
-                    const today = new Date().toISOString().slice(0, 10);
-                    const fullDateTime = `${today}T${time}`;
-                    handleTextChange("date", fullDateTime);
+                    handleTextChange("time", e.target.value);
                   }}
                 />
                 {errors.date && (

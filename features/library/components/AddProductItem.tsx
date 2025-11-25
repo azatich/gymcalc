@@ -40,7 +40,7 @@ const AddProductItem = () => {
 
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  const addFoodToLibrary = useFoodLibraryMutation();;
+  const addFoodToLibrary = useFoodLibraryMutation();
 
   const handleSubmit = async () => {
     if (!validateProductAddForm(formData, setErrors)) {
@@ -63,7 +63,12 @@ const AddProductItem = () => {
     } catch (error) {}
   };
 
-  const handleTextChange = createTextChangeHandler(formData, setFormData, errors, setErrors)
+  const handleTextChange = createTextChangeHandler(
+    formData,
+    setFormData,
+    errors,
+    setErrors
+  );
 
   const handleCategoryChange = (value: string) => {
     setFormData({ ...formData, category_id: value });
@@ -95,7 +100,7 @@ const AddProductItem = () => {
         <div>
           <h1 className="text-4xl font-bold mb-2">Библиотека продуктов</h1>
           <p className="text-lg text-gray-600">
-            Создайте свою базу продуктов для быстрого доступа
+            Добавьте продукты с их КБЖУ, чтобы быстро составлять приёмы пищи
           </p>
         </div>
 
@@ -152,14 +157,14 @@ const AddProductItem = () => {
                     </SelectTrigger>
                     <SelectContent className="bg-white">
                       {foodCategories?.map((cat) => (
-                          <SelectItem
-                            className="hover:bg-black hover:text-white transition-colors duration-200"
-                            key={cat.id}
-                            value={cat.id}
-                          >
-                            {cat.category_name} {cat.category_emoji}
-                          </SelectItem>
-                        ))}
+                        <SelectItem
+                          className="hover:bg-black hover:text-white transition-colors duration-200"
+                          key={cat.id}
+                          value={cat.id}
+                        >
+                          {cat.category_name} {cat.category_emoji}
+                        </SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                   {errors.category && (
@@ -167,7 +172,7 @@ const AddProductItem = () => {
                   )}
                 </div>
 
-                  {/*  Порция */}
+                {/*  Порция */}
                 <div className="space-y-2">
                   <Label htmlFor="modal-portion" className="text-base">
                     Порция
@@ -192,8 +197,7 @@ const AddProductItem = () => {
                 </div>
               </div>
 
-
-                  {/*  КБЖУ */}
+              {/*  КБЖУ */}
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="modal-calories" className="text-base">

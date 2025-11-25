@@ -80,8 +80,8 @@ export const validateMealForm = <T extends Record<string, any>>(
     newErrors.name = "Название блюда обязательно";
   }
 
-  if (!formData.date) {
-    newErrors.date = "Дата обязательна";
+  if (!formData.time) {
+    newErrors.time = "Время обязательна";
   }
 
   if (!formData.mealtime || !formData.mealtime.trim()) {

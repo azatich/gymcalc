@@ -24,7 +24,6 @@ export default function SidebarClient({ user }: { user: UserData }) {
   const [showMenu, setShowMenu] = useState(false);
   const currentScreen = usePathname();
 
-  // Блокируем скролл когда меню открыто
   useEffect(() => {
     if (showMenu) {
       document.body.style.overflow = "hidden";
@@ -38,7 +37,7 @@ export default function SidebarClient({ user }: { user: UserData }) {
 
   const navigationItems = [
     { id: "home" as Screen, label: "Главная", icon: Home },
-    { id: "foods" as Screen, label: "Продукты", icon: ListChecks },
+    { id: "diary" as Screen, label: "Дневник", icon: ListChecks },
     { id: "add" as Screen, label: "Добавить", icon: PlusCircle },
     { id: "library" as Screen, label: "Библиотека", icon: Database },
     { id: "progress" as Screen, label: "Прогресс", icon: TrendingUp },
