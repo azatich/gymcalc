@@ -376,14 +376,20 @@ const MealForm = () => {
       {/* Library Dialog */}
       {showLibraryDialog && (
         <Dialog open={showLibraryDialog} onOpenChange={setShowLibraryDialog}>
-          <DialogContent className="max-w-md p-6 md:p-8 rounded-xl bg-white border-none overflow-hidden">
+          <DialogContent
+            onOpenAutoFocus={(e) => e.preventDefault()}
+            className="max-w-md p-6 md:p-8 rounded-xl bg-white border-none overflow-hidden"
+          >
             <DialogHeader>
               <DialogTitle className="text-2xl md:text-3xl">
                 Моя библиотека продуктов
               </DialogTitle>
             </DialogHeader>
 
-            <SearchInput searchQuery={searchQuery} setSearchQuery={setSearchQuery}/>
+            <SearchInput
+              searchQuery={searchQuery}
+              setSearchQuery={setSearchQuery}
+            />
 
             {/* Categories */}
             <div className="flex gap-2 overflow-x-auto pb-2">
