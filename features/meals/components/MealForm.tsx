@@ -21,7 +21,7 @@ import { useFoodCategoryQuery } from "@/features/food_category/hooks/useFoodCate
 import { useFoodLibraryQuery } from "@/features/library/hooks/useFoodLibraryQuery";
 import { Product } from "@/features/library/types";
 import { Loader2, Plus, Search, X } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { getAvailableCategories } from "@/lib/getAvailableCategories";
 import { useMealMutation } from "../hooks/useMealMutation";
 import { createTextChangeHandler } from "@/lib/useFormHandlers";
@@ -36,6 +36,15 @@ const MealForm = () => {
   const [showLibraryDialog, setShowLibraryDialog] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [searchQuery, setSearchQuery] = useState("");
+
+  const timeRef = useRef<HTMLInputElement>(null);
+  const nameRef = useRef<HTMLInputElement>(null);
+  const mealtimeRef = useRef<HTMLButtonElement>(null);
+  const portionRef = useRef<HTMLInputElement>(null);
+  const caloriesRef = useRef<HTMLInputElement>(null);
+  const proteinRef = useRef<HTMLInputElement>(null);
+  const fatsRef = useRef<HTMLInputElement>(null);
+  const carbsRef = useRef<HTMLInputElement>(null);
 
   const addMeal = useMealMutation();
 
@@ -89,7 +98,55 @@ const MealForm = () => {
   };
 
   const handleSubmit = () => {
-    if (!validateMealForm(formData, setErrors)) return;
+    const isValid = validateMealForm(formData, setErrors);
+
+    if (!isValid) {
+      setTimeout(() => {
+        if (errors.time)
+          timeRef.current?.scrollIntoView({
+            behavior: "smooth",
+            block: "center",
+          });
+        else if (errors.mealtime)
+          mealtimeRef.current?.scrollIntoView({
+            behavior: "smooth",
+            block: "center",
+          });
+        else if (errors.name)
+          nameRef.current?.scrollIntoView({
+            behavior: "smooth",
+            block: "center",
+          });
+        else if (errors.portion)
+          portionRef.current?.scrollIntoView({
+            behavior: "smooth",
+            block: "center",
+          });
+        else if (errors.calories)
+          caloriesRef.current?.scrollIntoView({
+            behavior: "smooth",
+            block: "center",
+          });
+        else if (errors.protein)
+          proteinRef.current?.scrollIntoView({
+            behavior: "smooth",
+            block: "center",
+          });
+        else if (errors.fats)
+          fatsRef.current?.scrollIntoView({
+            behavior: "smooth",
+            block: "center",
+          });
+        else if (errors.carbs)
+          carbsRef.current?.scrollIntoView({
+            behavior: "smooth",
+            block: "center",
+          });
+      }, 50);
+
+      return;
+    }
+
     addMeal.mutate(formData);
 
     setFormData({
@@ -176,7 +233,10 @@ const MealForm = () => {
                   handleTextChange("mealtime", value);
                 }}
               >
-                <SelectTrigger className="h-14 text-lg rounded-xl border-gray-200">
+                <SelectTrigger
+                  ref={mealtimeRef}
+                  className="h-14 text-lg rounded-xl border-gray-200"
+                >
                   <SelectValue placeholder="Выберите прием пищи" />
                 </SelectTrigger>
                 <SelectContent className="bg-white">
@@ -217,6 +277,7 @@ const MealForm = () => {
               </Label>
               <div className="relative">
                 <Input
+                  ref={timeRef}
                   type="time"
                   id="time"
                   className="h-14 text-lg rounded-xl border-gray-200 pl-10"
@@ -242,6 +303,7 @@ const MealForm = () => {
                 Название продукта
               </Label>
               <Input
+                ref={nameRef}
                 type="text"
                 id="name"
                 placeholder="Например: Куриная грудка"
@@ -259,6 +321,7 @@ const MealForm = () => {
                 Порция
               </Label>
               <Input
+                ref={portionRef}
                 type="text"
                 id="serving"
                 placeholder="Например: 100г"
@@ -282,6 +345,7 @@ const MealForm = () => {
                 Калории (ккал)
               </Label>
               <Input
+                ref={caloriesRef}
                 type="number"
                 id="calories"
                 placeholder="0"
@@ -301,6 +365,7 @@ const MealForm = () => {
                 Белки (г)
               </Label>
               <Input
+                ref={proteinRef}
                 type="number"
                 id="protein"
                 placeholder="0"
@@ -320,6 +385,7 @@ const MealForm = () => {
                 Жиры (г)
               </Label>
               <Input
+                ref={fatsRef}
                 type="number"
                 id="fats"
                 placeholder="0"
@@ -339,6 +405,7 @@ const MealForm = () => {
                 Углеводы (г)
               </Label>
               <Input
+                ref={carbsRef}
                 type="number"
                 id="carbs"
                 placeholder="0"

@@ -11,7 +11,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import Header from "./Header";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ProfileFormData, UserActivityLevel, UserGoal } from "../types";
 import { Button } from "@/components/ui/button";
 import { createTextChangeHandler } from "@/lib/useFormHandlers";
@@ -37,6 +37,13 @@ const ProfileForm = () => {
     goal: "",
   });
   const [errors, setErrors] = useState<Record<any, string>>({});
+  const nameRef = useRef<HTMLInputElement>(null);
+  const ageRef = useRef<HTMLInputElement>(null);
+  const genderRef = useRef<HTMLButtonElement>(null);
+  const heightRef = useRef<HTMLInputElement>(null);
+  const weightRef = useRef<HTMLInputElement>(null);
+  const activityLevelRef = useRef<HTMLButtonElement>(null);
+  const goalRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     if (userProfileData) {
@@ -61,9 +68,50 @@ const ProfileForm = () => {
   );
 
   const handleSubmit = () => {
-    if (!validateProfileForm(formData, setErrors)) {
+    const isValid = validateProfileForm(formData, setErrors);
+
+    if (!isValid) {
+      setTimeout(() => {
+        if (errors.name)
+          nameRef.current?.scrollIntoView({
+            behavior: "smooth",
+            block: "center",
+          });
+        else if (errors.age)
+          ageRef.current?.scrollIntoView({
+            behavior: "smooth",
+            block: "center",
+          });
+        else if (errors.gender)
+          genderRef.current?.scrollIntoView({
+            behavior: "smooth",
+            block: "center",
+          });
+        else if (errors.height)
+          heightRef.current?.scrollIntoView({
+            behavior: "smooth",
+            block: "center",
+          });
+        else if (errors.weight)
+          weightRef.current?.scrollIntoView({
+            behavior: "smooth",
+            block: "center",
+          });
+        else if (errors.activity_level)
+          activityLevelRef.current?.scrollIntoView({
+            behavior: "smooth",
+            block: "center",
+          });
+        else if (errors.goal)
+          goalRef.current?.scrollIntoView({
+            behavior: "smooth",
+            block: "center",
+          });
+      }, 50);
+
       return;
     }
+
     try {
       updateProfile.mutate({ data: formData });
     } catch (error) {}
@@ -100,6 +148,7 @@ const ProfileForm = () => {
                 Имя
               </Label>
               <Input
+                ref={nameRef}
                 type="text"
                 id="name"
                 value={formData.name}
@@ -122,6 +171,7 @@ const ProfileForm = () => {
                 </Label>
                 <div className="relative">
                   <Input
+                    ref={ageRef}
                     type="number"
                     id="age"
                     value={formData.age}
@@ -154,7 +204,10 @@ const ProfileForm = () => {
                     }
                   }}
                 >
-                  <SelectTrigger className="h-14 text-lg rounded-xl border-gray-200">
+                  <SelectTrigger
+                    ref={genderRef}
+                    className="h-14 text-lg rounded-xl border-gray-200"
+                  >
                     <SelectValue placeholder="Выберите пол">
                       {formData.gender === "male" && "Мужской"}
                       {formData.gender === "female" && "Женский"}
@@ -187,6 +240,7 @@ const ProfileForm = () => {
                 </Label>
                 <div className="relative">
                   <Input
+                    ref={heightRef}
                     type="number"
                     id="height"
                     value={formData.height}
@@ -214,6 +268,7 @@ const ProfileForm = () => {
                 </Label>
                 <div className="relative">
                   <Input
+                    ref={weightRef}
                     type="number"
                     id="weight"
                     value={formData.weight}
@@ -261,7 +316,10 @@ const ProfileForm = () => {
                   }
                 }}
               >
-                <SelectTrigger className="h-14 text-lg rounded-xl border-gray-200">
+                <SelectTrigger
+                  ref={activityLevelRef}
+                  className="h-14 text-lg rounded-xl border-gray-200"
+                >
                   <SelectValue placeholder="Выберите уровень активности">
                     {formData.activity_level
                       ? activityLabels[
@@ -321,7 +379,10 @@ const ProfileForm = () => {
                   }
                 }}
               >
-                <SelectTrigger className="h-14 text-lg rounded-xl border-gray-200">
+                <SelectTrigger
+                  ref={goalRef}
+                  className="h-14 text-lg rounded-xl border-gray-200"
+                >
                   <SelectValue placeholder="Выберите цель">
                     {formData.goal
                       ? goalLabels[formData.goal as UserGoal]
