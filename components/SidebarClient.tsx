@@ -59,27 +59,31 @@ export default function SidebarClient({ user }: { user: UserData }) {
             <p className="text-gray-800">Здравствуйте, {user?.username}</p>
           </div>
 
-          <nav className="flex-1 space-y-2 py-3">
-            {navigationItems.map((item) => {
-              const Icon = item.icon;
-              const isActive = currentScreen === `/${item.id}`;
+          <nav className="flex-1 flex flex-col py-3">
+            <div className="space-y-2 flex-1">
+              {navigationItems.map((item) => {
+                const Icon = item.icon;
+                const isActive = currentScreen === `/${item.id}`;
 
-              return (
-                <Link
-                  key={item.id}
-                  href={`/${item.id}`}
-                  className={`w-full flex items-center gap-4 px-5 py-4 rounded-2xl transition-all text-md ${
-                    isActive
-                      ? "bg-black text-white shadow-lg shadow-indigo-200"
-                      : "text-gray-700 hover:bg-gray-50"
-                  }`}
-                >
-                  <Icon className="w-6 h-6" />
-                  <span>{item.label}</span>
-                </Link>
-              );
-            })}
-            <LoginButton />
+                return (
+                  <Link
+                    key={item.id}
+                    href={`/${item.id}`}
+                    className={`w-full flex items-center gap-4 px-5 py-4 rounded-2xl transition-all text-md ${
+                      isActive
+                        ? "bg-black text-white shadow-lg shadow-indigo-200"
+                        : "text-gray-700 hover:bg-gray-50"
+                    }`}
+                  >
+                    <Icon className="w-6 h-6" />
+                    <span>{item.label}</span>
+                  </Link>
+                );
+              })}
+            </div>
+            <div className="mt-auto pt-4">
+              <LoginButton />
+            </div>
           </nav>
         </aside>
       </div>
@@ -168,7 +172,7 @@ export default function SidebarClient({ user }: { user: UserData }) {
                 </Link>
               );
             })}
-            
+
             {/* Login Button in Menu */}
             <div className="mt-4 pt-4 border-t border-gray-200">
               <LoginButton />
