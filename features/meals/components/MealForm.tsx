@@ -478,7 +478,10 @@ const MealForm = () => {
             }
           }}
         >
-          <DialogContent className="max-w-md p-6 md:p-8 rounded-xl bg-white border-none">
+          <DialogContent
+            onOpenAutoFocus={(e) => e.preventDefault()}
+            className="max-w-md p-6 md:p-8 rounded-xl bg-white border-none"
+          >
             <DialogHeader>
               <div className="flex items-center gap-3">
                 <span className="text-2xl">
