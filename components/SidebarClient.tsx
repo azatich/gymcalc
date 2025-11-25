@@ -38,7 +38,7 @@ export default function SidebarClient({ user }: { user: UserData }) {
   const navigationItems = [
     { id: "home" as Screen, label: "Главная", icon: Home },
     { id: "diary" as Screen, label: "Дневник", icon: ListChecks },
-    { id: "add" as Screen, label: "Добавить", icon: PlusCircle },
+    { id: "meals" as Screen, label: "Добавить", icon: PlusCircle },
     { id: "library" as Screen, label: "Библиотека", icon: Database },
     { id: "progress" as Screen, label: "Прогресс", icon: TrendingUp },
     { id: "profile" as Screen, label: "Профиль", icon: User },
@@ -51,7 +51,7 @@ export default function SidebarClient({ user }: { user: UserData }) {
         <aside className="fixed left-0 top-0 h-screen w-80 bg-white border-r border-gray-200 p-8 flex flex-col">
           <div className="mb-4">
             <div className="flex items-center gap-3 mb-2">
-              <div className="w-10 h-10 bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-xl flex items-center justify-center text-white text-xl font-bold">
+              <div className="w-10 h-10 bg-linear-to-br from-indigo-500 to-indigo-600 rounded-xl flex items-center justify-center text-white text-xl font-bold">
                 G
               </div>
               <h1 className="text-3xl font-bold">GymCalc</h1>
@@ -94,7 +94,7 @@ export default function SidebarClient({ user }: { user: UserData }) {
         <header className="fixed top-0 left-0 right-0 bg-white/90 backdrop-blur-lg border-b border-gray-200 px-5 py-4 z-30">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-lg flex items-center justify-center text-white font-bold">
+              <div className="w-8 h-8 bg-linear-to-br from-indigo-500 to-indigo-600 rounded-lg flex items-center justify-center text-white font-bold">
                 G
               </div>
               <h1 className="text-xl font-bold">GymCalc</h1>
@@ -126,7 +126,7 @@ export default function SidebarClient({ user }: { user: UserData }) {
           {/* Menu Header с кнопкой закрытия */}
           <div className="flex items-center justify-between px-5 py-4 border-b border-gray-200">
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-lg flex items-center justify-center text-white font-bold">
+              <div className="w-8 h-8 bg-linear-to-br from-indigo-500 to-indigo-600 rounded-lg flex items-center justify-center text-white font-bold">
                 G
               </div>
               <h2 className="text-xl font-bold">Меню</h2>
