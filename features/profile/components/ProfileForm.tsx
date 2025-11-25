@@ -363,23 +363,21 @@ const ProfileForm = () => {
           <MacrosRecommendation userProfileData={userProfileData} />
         )}
 
-        <div className="sticky bottom-24 md:bottom-6">
-          <Button
-            type="button"
-            onClick={handleSubmit}
-            disabled={updateProfile.isPending}
-            className="w-full bg-indigo-800 hover:bg-indigo-500 text-white h-14 text-lg rounded-2xl shadow-lg hover:shadow-xl transition-all duration-200"
-            size="lg"
-          >
-            {updateProfile.isPending ? (
-              <Loader2 className="animate-spin" />
-            ) : (
-              <>
-                <Save className="w-5 h-5 mr-2" /> Сохранить
-              </>
-            )}
-          </Button>
-        </div>
+        <Button
+          type="button"
+          onClick={handleSubmit}
+          disabled={updateProfile.isPending}
+          className="w-full bg-indigo-800 hover:bg-indigo-500 text-white h-14 text-lg rounded-2xl shadow-lg hover:shadow-xl transition-all duration-200"
+          size="lg"
+        >
+          {updateProfile.isPending ? (
+            <Loader2 className="animate-spin" />
+          ) : (
+            <>
+              <Save className="w-5 h-5 mr-2" /> Сохранить
+            </>
+          )}
+        </Button>
       </form>
     </div>
   );
