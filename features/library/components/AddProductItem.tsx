@@ -112,7 +112,10 @@ const AddProductItem = () => {
             </Button>
           </DialogTrigger>
 
-          <DialogContent className="bg-white border-none max-w-2xl max-h-[90vh] overflow-y-auto">
+          <DialogContent
+            onOpenAutoFocus={(e) => e.preventDefault()}
+            className="bg-white border-none max-w-2xl max-h-[90vh] overflow-y-auto"
+          >
             <DialogHeader>
               <DialogTitle className="text-2xl">Добавить продукт</DialogTitle>
             </DialogHeader>
