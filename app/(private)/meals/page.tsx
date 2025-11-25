@@ -1,5 +1,5 @@
-import Header from '@/features/meal/components/Header'
-import MealForm from '@/features/meal/components/MealForm'
+import Header from '@/features/meals/components/Header'
+import MealForm from '@/features/meals/components/MealForm'
 import React from 'react'
 
 const AddProduct = () => {

@@ -1,6 +1,6 @@
 "use client";
 
-import { Input } from "@/components/ui/input";
+import SearchInput from "@/components/SearchInput";
 import {
   Select,
   SelectContent,
@@ -8,19 +8,23 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Search } from "lucide-react";
+import { Dispatch, SetStateAction } from "react";
 
 interface SearchProductProps {
   searchQuery: string;
-  onSearchChange: (query: string) => void;
+  onSearchQueryChange: Dispatch<SetStateAction<string>>;
   selectedCategory: string;
   onCategoryChange: (category: string) => void;
-  availableCategories: { id: string; category_name: string; category_emoji: string }[];
+  availableCategories: {
+    id: string;
+    category_name: string;
+    category_emoji: string;
+  }[];
 }
 
 const SearchProduct = ({
   searchQuery,
-  onSearchChange,
+  onSearchQueryChange,
   selectedCategory,
   onCategoryChange,
   availableCategories,
@@ -28,16 +32,10 @@ const SearchProduct = ({
   return (
     <div className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
       <div className="flex flex-col md:flex-row gap-4">
-        <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
-          <Input
-            type="text"
-            placeholder="Поиск продуктов..."
-            className="pl-10 h-12 rounded-xl border-gray-200"
-            value={searchQuery}
-            onChange={(e) => onSearchChange(e.target.value)}
-          />
-        </div>
+        <SearchInput
+          searchQuery={searchQuery}
+          setSearchQuery={onSearchQueryChange}
+        />
         <Select value={selectedCategory} onValueChange={onCategoryChange}>
           <SelectTrigger className="h-12 w-full md:w-64 rounded-xl border-gray-200">
             <SelectValue />

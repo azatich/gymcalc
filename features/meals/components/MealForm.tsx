@@ -20,12 +20,13 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { useFoodCategoryQuery } from "@/features/food_category/hooks/useFoodCategoryQuery";
 import { useFoodLibraryQuery } from "@/features/library/hooks/useFoodLibraryQuery";
 import { Product } from "@/features/library/types";
-import { Loader2, Plus, X } from "lucide-react";
+import { Loader2, Plus, Search, X } from "lucide-react";
 import { useMemo, useState } from "react";
 import { getAvailableCategories } from "@/lib/getAvailableCategories";
 import { useMealMutation } from "../hooks/useMealMutation";
 import { createTextChangeHandler } from "@/lib/useFormHandlers";
 import { validateMealForm } from "@/lib/validationForms";
+import SearchInput from "@/components/SearchInput";
 
 const MealForm = () => {
   const [selectedCategory, setSelectedCategory] = useState("all");
@@ -34,6 +35,7 @@ const MealForm = () => {
   const [portionMultiplier, setPortionMultiplier] = useState("1");
   const [showLibraryDialog, setShowLibraryDialog] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [searchQuery, setSearchQuery] = useState("");
 
   const addMeal = useMealMutation();
 
@@ -48,9 +50,6 @@ const MealForm = () => {
     carbs: 0,
   });
 
-  console.log(formData);
-  
-
   const { data: libraryProducts, isLoading: isLoadingLibProducts } =
     useFoodLibraryQuery();
   const { data: foodCategories } = useFoodCategoryQuery();
@@ -63,14 +62,18 @@ const MealForm = () => {
   const filteredLibraryProducts = useMemo(() => {
     if (!libraryProducts) return [];
 
-    if (selectedCategory === "all") {
-      return libraryProducts;
-    }
+    return libraryProducts.filter((product) => {
+      const matchesCategory =
+        selectedCategory === "all" ||
+        product.category_id === selectedCategory.toLowerCase();
 
-    return libraryProducts.filter(
-      (product) => product.category_id === selectedCategory
-    );
-  }, [libraryProducts, selectedCategory]);
+      const matchesQuery =
+        searchQuery === "" ||
+        product.name.toLowerCase().includes(searchQuery.toLowerCase());
+
+      return matchesCategory && matchesQuery;
+    });
+  }, [libraryProducts, selectedCategory, searchQuery]);
 
   const handleTextChange = createTextChangeHandler(
     formData,
@@ -373,12 +376,14 @@ const MealForm = () => {
       {/* Library Dialog */}
       {showLibraryDialog && (
         <Dialog open={showLibraryDialog} onOpenChange={setShowLibraryDialog}>
-          <DialogContent className="max-w-4xl max-h-[80vh] bg-white border-none">
+          <DialogContent className="max-w-md p-6 md:p-8 rounded-xl bg-white border-none overflow-hidden">
             <DialogHeader>
               <DialogTitle className="text-2xl md:text-3xl">
                 Моя библиотека продуктов
               </DialogTitle>
             </DialogHeader>
+
+            <SearchInput searchQuery={searchQuery} setSearchQuery={setSearchQuery}/>
 
             {/* Categories */}
             <div className="flex gap-2 overflow-x-auto pb-2">
@@ -457,29 +462,29 @@ const MealForm = () => {
 
       {/* Portion Modal */}
       {showPortionModal && selectedProduct && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl p-6 md:p-8 max-w-md w-full shadow-2xl">
-            <div className="flex items-center justify-between mb-6">
+        <Dialog
+          open={showPortionModal}
+          onOpenChange={(open) => {
+            if (!open) {
+              setShowPortionModal(false);
+              setPortionMultiplier("1");
+              setSelectedProduct(null);
+            }
+          }}
+        >
+          <DialogContent className="max-w-md p-6 md:p-8 rounded-xl bg-white border-none">
+            <DialogHeader>
               <div className="flex items-center gap-3">
                 <span className="text-2xl">
                   {foodCategories?.find(
                     (cat) => cat.id === selectedProduct.category_id
                   )?.category_emoji || "🍽️"}
                 </span>
-                <h2 className="text-2xl font-semibold">Укажите порцию</h2>
+                <DialogTitle className="text-2xl font-semibold">
+                  Укажите порцию
+                </DialogTitle>
               </div>
-              <button
-                type="button"
-                onClick={() => {
-                  setShowPortionModal(false);
-                  setPortionMultiplier("1");
-                  setSelectedProduct(null);
-                }}
-                className="w-10 h-10 rounded-xl bg-gray-100 flex items-center justify-center hover:bg-gray-200 transition-colors"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
+            </DialogHeader>
 
             <div className="mb-6">
               <h3 className="text-lg font-medium mb-2">
@@ -585,8 +590,8 @@ const MealForm = () => {
                 Добавить
               </Button>
             </div>
-          </div>
-        </div>
+          </DialogContent>
+        </Dialog>
       )}
     </>
   );

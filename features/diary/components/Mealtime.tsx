@@ -1,6 +1,6 @@
 "use client";
 
-import { useMealQuery } from "@/features/meal/hooks/useMealQuery";
+import { useMealQuery } from "@/features/meals/hooks/useMealQuery";
 import MealItemCard from "./MealItemCard";
 import { Button } from "@/components/ui/button";
 import { Calendar, ChevronLeft, ChevronRight } from "lucide-react";
