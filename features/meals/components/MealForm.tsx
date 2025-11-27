@@ -27,6 +27,7 @@ import { useMealMutation } from "../hooks/useMealMutation";
 import { createTextChangeHandler } from "@/lib/useFormHandlers";
 import { validateMealForm } from "@/lib/validationForms";
 import SearchInput from "@/components/SearchInput";
+import { formatNumber } from "@/lib/formatNumber";
 
 const MealForm = () => {
   const [selectedCategory, setSelectedCategory] = useState("all");
@@ -54,7 +55,7 @@ const MealForm = () => {
     mealtime: "",
     portion: "",
     calories: 0,
-    protein: 0,
+    proteins: 0,
     fats: 0,
     carbs: 0,
   });
@@ -127,7 +128,7 @@ const MealForm = () => {
             behavior: "smooth",
             block: "center",
           });
-        else if (errors.protein)
+        else if (errors.proteins)
           proteinRef.current?.scrollIntoView({
             behavior: "smooth",
             block: "center",
@@ -155,16 +156,20 @@ const MealForm = () => {
       mealtime: "",
       portion: "",
       calories: 0,
-      protein: 0,
+      proteins: 0,
       fats: 0,
       carbs: 0,
     });
   };
+  
 
   const handleSelectLibraryProduct = () => {
     if (!selectedProduct) return;
 
     const multiplier = parseFloat(portionMultiplier || "1");
+
+    console.log(multiplier);
+    
 
     setFormData({
       name: selectedProduct.name,
@@ -172,9 +177,9 @@ const MealForm = () => {
       mealtime: formData.mealtime,
       portion: `${selectedProduct.portion} × ${multiplier}`,
       calories: Math.round(selectedProduct.calories_per_100g * multiplier),
-      protein: selectedProduct.proteins_per_100g * multiplier,
-      fats: selectedProduct.fat_per_100g * multiplier,
-      carbs: selectedProduct.carbs_per_100g * multiplier,
+      proteins: formatNumber(selectedProduct.proteins_per_100g * multiplier),
+      fats: formatNumber(selectedProduct.fat_per_100g * multiplier),
+      carbs: formatNumber(selectedProduct.carbs_per_100g * multiplier),
     });
 
     setShowPortionModal(false);
@@ -242,25 +247,25 @@ const MealForm = () => {
                 <SelectContent className="bg-white">
                   <SelectItem
                     className="hover:text-white hover:bg-black"
-                    value="breakfast"
+                    value="завтрак"
                   >
                     Завтрак
                   </SelectItem>
                   <SelectItem
                     className="hover:text-white hover:bg-black"
-                    value="lunch"
+                    value="обед"
                   >
                     Обед
                   </SelectItem>
                   <SelectItem
                     className="hover:text-white hover:bg-black"
-                    value="dinner"
+                    value="ужин"
                   >
                     Ужин
                   </SelectItem>
                   <SelectItem
                     className="hover:text-white hover:bg-black"
-                    value="snack"
+                    value="перекус"
                   >
                     Перекус
                   </SelectItem>
@@ -370,9 +375,9 @@ const MealForm = () => {
                 id="protein"
                 placeholder="0"
                 className="h-14 text-lg rounded-xl border-gray-200"
-                value={formData.protein}
+                value={formData.proteins}
                 onChange={(e) =>
-                  handleTextChange("protein", Number(e.target.value))
+                  handleTextChange("proteins", Number(e.target.value))
                 }
               />
               {errors.protein && (

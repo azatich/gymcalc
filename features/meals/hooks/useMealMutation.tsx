@@ -10,6 +10,7 @@ export const useMealMutation = () => {
     onSuccess: async () => {
       await queryClient.invalidateQueries({
         queryKey: [mealApi.baseKey],
+        refetchType: 'active',
       });
 
       toast.success("Прием пищи добавлен успешно!", {

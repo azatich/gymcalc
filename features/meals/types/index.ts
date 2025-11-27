@@ -4,7 +4,7 @@ export interface MealFormData {
   mealtime: string;
   portion: string;
   calories: number;
-  protein: number;
+  proteins: number;
   fats: number;
   carbs: number;
 }

@@ -66,7 +66,7 @@ export async function GET(req: Request) {
     const endOfDay = `${date}T23:59:59.999${timezoneOffset}`;
     query = query.gte("created_at", startOfDay).lte("created_at", endOfDay);
   }
-  query = query.order("created_at", { ascending: false });
+  query = query.order("created_at", { ascending: true });
 
   const { data, error } = await query;
 

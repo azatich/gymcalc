@@ -96,17 +96,6 @@ export const validateMealForm = <T extends Record<string, any>>(
     newErrors.calories = "Калории обязательны";
   }
 
-  if (!formData.protein) {
-    newErrors.protein = "Белки обьязательны";
-  }
-  if (!formData.fats) {
-    newErrors.fats = "Жиры обьязательны";
-  }
-
-  if (!formData.carbs) {
-    newErrors.carbs = "Углеводы обьязательны";
-  }
-
   setErrors(newErrors);
   return Object.keys(newErrors).length === 0;
 };

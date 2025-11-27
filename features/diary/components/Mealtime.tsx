@@ -27,7 +27,7 @@ const Mealtime = () => {
     });
   };
 
-  console.log(selectedDate);
+  const isToday = new Date().toDateString() === selectedDate.toDateString();
 
   return (
     <div className="space-y-6">
@@ -50,8 +50,12 @@ const Mealtime = () => {
                   <p className="text-lg">{formatDateToRU(selectedDate)}</p>
                 </div>
               </div>
-              {true && (
-                <Button variant="outline" className="rounded-xl">
+              {!isToday && (
+                <Button
+                  onClick={() => setSelectedDate(new Date())}
+                  variant="outline"
+                  className="rounded-xl hover:bg-gray-100"
+                >
                   Сегодня
                 </Button>
               )}
