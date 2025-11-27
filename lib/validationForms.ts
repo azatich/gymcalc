@@ -69,33 +69,3 @@ export const validateProfileForm = <T extends Record<string, any>>(
   setErrors(newErrors);
   return Object.keys(newErrors).length === 0;
 };
-
-export const validateMealForm = <T extends Record<string, any>>(
-  formData: T,
-  setErrors: Dispatch<SetStateAction<Record<string, string>>>
-): boolean => {
-  const newErrors: Record<any, string> = {};
-
-  if (!formData.name || !formData.name.trim()) {
-    newErrors.name = "Название блюда обязательно";
-  }
-
-  if (!formData.time) {
-    newErrors.time = "Время обязательна";
-  }
-
-  if (!formData.mealtime || !formData.mealtime.trim()) {
-    newErrors.mealtime = "Время приёма пищи обязательно";
-  }
-
-  if (!formData.portion.trim() || formData.portion <= 0) {
-    newErrors.portion = "Порция обьязательна";
-  }
-
-  if (!formData.calories) {
-    newErrors.calories = "Калории обязательны";
-  }
-
-  setErrors(newErrors);
-  return Object.keys(newErrors).length === 0;
-};

@@ -21,7 +21,7 @@ import { useFoodCategoryQuery } from "@/features/food_category/hooks/useFoodCate
 import { useFoodLibraryQuery } from "@/features/library/hooks/useFoodLibraryQuery";
 import { Product } from "@/features/library/types";
 import { Loader2, Plus, Search, X } from "lucide-react";
-import { useMemo, useRef, useState } from "react";
+import { useMemo, useRef, useState, useEffect } from "react";
 import { getAvailableCategories } from "@/lib/getAvailableCategories";
 import { useMealMutation } from "../hooks/useMealMutation";
 import { createTextChangeHandler } from "@/lib/useFormHandlers";
@@ -29,9 +29,18 @@ import { validateMealForm } from "@/lib/validationForms";
 import SearchInput from "@/components/SearchInput";
 import { formatNumber } from "@/lib/formatNumber";
 
+interface SelectedProduct {
+  product: Product;
+  multiplier: number;
+  id: string; // unique id for the selection
+}
+
 const MealForm = () => {
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [selectedProducts, setSelectedProducts] = useState<SelectedProduct[]>(
+    []
+  );
   const [showPortionModal, setShowPortionModal] = useState(false);
   const [portionMultiplier, setPortionMultiplier] = useState("1");
   const [showLibraryDialog, setShowLibraryDialog] = useState(false);
@@ -99,51 +108,80 @@ const MealForm = () => {
   };
 
   const handleSubmit = () => {
-    const isValid = validateMealForm(formData, setErrors);
+    // Validate and get errors directly
+    const newErrors: Record<string, string> = {};
+
+    if (!formData.name || !formData.name.trim()) {
+      newErrors.name = "Название блюда обязательно";
+    }
+
+    if (!formData.time) {
+      newErrors.time = "Время обязательна";
+    }
+
+    if (!formData.mealtime || !formData.mealtime.trim()) {
+      newErrors.mealtime = "Время приёма пищи обязательно";
+    }
+
+    if (!formData.portion || !formData.portion.trim()) {
+      newErrors.portion = "Порция обьязательна";
+    }
+
+    if (!formData.calories) {
+      newErrors.calories = "Калории обязательны";
+    }
+
+    // Set errors in state
+    setErrors(newErrors);
+
+    const isValid = Object.keys(newErrors).length === 0;
 
     if (!isValid) {
-      setTimeout(() => {
-        if (errors.time)
-          timeRef.current?.scrollIntoView({
-            behavior: "smooth",
-            block: "center",
-          });
-        else if (errors.mealtime)
-          mealtimeRef.current?.scrollIntoView({
-            behavior: "smooth",
-            block: "center",
-          });
-        else if (errors.name)
-          nameRef.current?.scrollIntoView({
-            behavior: "smooth",
-            block: "center",
-          });
-        else if (errors.portion)
-          portionRef.current?.scrollIntoView({
-            behavior: "smooth",
-            block: "center",
-          });
-        else if (errors.calories)
-          caloriesRef.current?.scrollIntoView({
-            behavior: "smooth",
-            block: "center",
-          });
-        else if (errors.proteins)
-          proteinRef.current?.scrollIntoView({
-            behavior: "smooth",
-            block: "center",
-          });
-        else if (errors.fats)
-          fatsRef.current?.scrollIntoView({
-            behavior: "smooth",
-            block: "center",
-          });
-        else if (errors.carbs)
-          carbsRef.current?.scrollIntoView({
-            behavior: "smooth",
-            block: "center",
-          });
-      }, 50);
+      // Use requestAnimationFrame to ensure DOM is updated with errors
+      requestAnimationFrame(() => {
+        setTimeout(() => {
+          if (newErrors.time)
+            timeRef.current?.scrollIntoView({
+              behavior: "smooth",
+              block: "center",
+            });
+          else if (newErrors.mealtime)
+            mealtimeRef.current?.scrollIntoView({
+              behavior: "smooth",
+              block: "center",
+            });
+          else if (newErrors.name)
+            nameRef.current?.scrollIntoView({
+              behavior: "smooth",
+              block: "center",
+            });
+          else if (newErrors.portion)
+            portionRef.current?.scrollIntoView({
+              behavior: "smooth",
+              block: "center",
+            });
+          else if (newErrors.calories)
+            caloriesRef.current?.scrollIntoView({
+              behavior: "smooth",
+              block: "center",
+            });
+          else if (newErrors.proteins)
+            proteinRef.current?.scrollIntoView({
+              behavior: "smooth",
+              block: "center",
+            });
+          else if (newErrors.fats)
+            fatsRef.current?.scrollIntoView({
+              behavior: "smooth",
+              block: "center",
+            });
+          else if (newErrors.carbs)
+            carbsRef.current?.scrollIntoView({
+              behavior: "smooth",
+              block: "center",
+            });
+        }, 100);
+      });
 
       return;
     }
@@ -160,31 +198,89 @@ const MealForm = () => {
       fats: 0,
       carbs: 0,
     });
+    setSelectedProducts([]); // Clear selected products after submission
   };
-  
+
+  // Calculate totals from all selected products
+  const calculateTotals = useMemo(() => {
+    return selectedProducts.reduce(
+      (acc, item) => {
+        const multiplier = item.multiplier;
+        return {
+          calories:
+            acc.calories +
+            Math.round(item.product.calories_per_100g * multiplier),
+          proteins: acc.proteins + item.product.proteins_per_100g * multiplier,
+          fats: acc.fats + item.product.fat_per_100g * multiplier,
+          carbs: acc.carbs + item.product.carbs_per_100g * multiplier,
+        };
+      },
+      { calories: 0, proteins: 0, fats: 0, carbs: 0 }
+    );
+  }, [selectedProducts]);
+
+  console.log(formData);
+
+  useEffect(() => {
+    if (selectedProducts.length > 0) {
+      const names = selectedProducts
+        .map((item) => item.product.name)
+        .join(", ");
+      const portions = selectedProducts
+        .map((item) => `${item.product.portion} × ${item.multiplier}`)
+        .join(" + ");
+
+      setFormData((prev) => ({
+        ...prev,
+        name: names,
+        portion: portions,
+        calories: calculateTotals.calories,
+        proteins: formatNumber(calculateTotals.proteins),
+        fats: formatNumber(calculateTotals.fats),
+        carbs: formatNumber(calculateTotals.carbs),
+      }));
+    } else if (selectedProducts.length === 0) {
+      // Clear form if all products were removed (only if name was auto-generated)
+      setFormData((prev) => {
+        // Only clear if the name contains commas (indicating it was auto-generated from multiple products)
+        if (prev.name && prev.name.includes(",")) {
+          return {
+            ...prev,
+            name: "",
+            portion: "",
+            calories: 0,
+            proteins: 0,
+            fats: 0,
+            carbs: 0,
+          };
+        }
+        return prev;
+      });
+    }
+  }, [selectedProducts, calculateTotals]);
 
   const handleSelectLibraryProduct = () => {
     if (!selectedProduct) return;
 
     const multiplier = parseFloat(portionMultiplier || "1");
 
-    console.log(multiplier);
-    
+    // Add product to selected products array
+    const newSelectedProduct: SelectedProduct = {
+      product: selectedProduct,
+      multiplier,
+      id: `${selectedProduct.id}-${Date.now()}`, // unique id
+    };
 
-    setFormData({
-      name: selectedProduct.name,
-      time: formData.time,
-      mealtime: formData.mealtime,
-      portion: `${selectedProduct.portion} × ${multiplier}`,
-      calories: Math.round(selectedProduct.calories_per_100g * multiplier),
-      proteins: formatNumber(selectedProduct.proteins_per_100g * multiplier),
-      fats: formatNumber(selectedProduct.fat_per_100g * multiplier),
-      carbs: formatNumber(selectedProduct.carbs_per_100g * multiplier),
-    });
+    setSelectedProducts((prev) => [...prev, newSelectedProduct]);
 
     setShowPortionModal(false);
     setPortionMultiplier("1");
     setSelectedProduct(null);
+    setShowLibraryDialog(true);
+  };
+
+  const handleRemoveProduct = (id: string) => {
+    setSelectedProducts((prev) => prev.filter((item) => item.id !== id));
   };
 
   return (
@@ -216,12 +312,104 @@ const MealForm = () => {
                       ? "продукта"
                       : "продуктов"}{" "}
                     доступно
+                    {selectedProducts.length > 0 && (
+                      <> • Выбрано: {selectedProducts.length}</>
+                    )}
                   </>
                 )}
               </div>
             </div>
           </div>
         </Button>
+      )}
+
+      {/* Selected Products List */}
+      {selectedProducts.length > 0 && (
+        <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+          <h2 className="text-lg mb-4">Выбранные продукты</h2>
+          <div className="space-y-3">
+            {selectedProducts.map((item) => {
+              const category = foodCategories?.find(
+                (cat) => cat.id === item.product.category_id
+              );
+              return (
+                <div
+                  key={item.id}
+                  className="flex items-center justify-between p-4 bg-gray-50 rounded-xl border border-gray-200"
+                >
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className="text-lg">
+                        {category?.category_emoji || "🍽️"}
+                      </span>
+                      <h3 className="font-medium">{item.product.name}</h3>
+                    </div>
+                    <div className="text-sm text-gray-600 mb-2">
+                      {item.product.portion} × {item.multiplier}
+                    </div>
+                    <div className="flex gap-3 text-sm text-gray-500">
+                      <span>
+                        {Math.round(
+                          item.product.calories_per_100g * item.multiplier
+                        )}{" "}
+                        ккал
+                      </span>
+                      <span>
+                        Б:{" "}
+                        {(
+                          item.product.proteins_per_100g * item.multiplier
+                        ).toFixed(1)}{" "}
+                        г
+                      </span>
+                      <span>
+                        Ж:{" "}
+                        {(item.product.fat_per_100g * item.multiplier).toFixed(
+                          1
+                        )}{" "}
+                        г
+                      </span>
+                      <span>
+                        У:{" "}
+                        {(
+                          item.product.carbs_per_100g * item.multiplier
+                        ).toFixed(1)}{" "}
+                        г
+                      </span>
+                    </div>
+                  </div>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => handleRemoveProduct(item.id)}
+                    className="ml-4 h-8 w-8 rounded-full hover:bg-red-100 hover:text-red-600"
+                  >
+                    <X className="h-4 w-4" />
+                  </Button>
+                </div>
+              );
+            })}
+          </div>
+          <div className="mt-4 pt-4 border-t border-gray-200">
+            <div className="flex justify-between items-center text-sm">
+              <span className="font-semibold text-gray-700">Итого:</span>
+              <div className="flex gap-4 text-gray-600">
+                <span className="font-medium text-primary">
+                  {calculateTotals.calories} ккал
+                </span>
+                <span className="font-medium text-indigo-600">
+                  Б: {calculateTotals.proteins.toFixed(1)} г
+                </span>
+                <span className="font-medium text-amber-600">
+                  Ж: {calculateTotals.fats.toFixed(1)} г
+                </span>
+                <span className="font-medium text-green-600">
+                  У: {calculateTotals.carbs.toFixed(1)} г
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
       )}
 
       <form className="space-y-6">
@@ -534,6 +722,21 @@ const MealForm = () => {
                 </div>
               )}
             </ScrollArea>
+
+            {selectedProducts.length > 0 && (
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-gray-600">
+                  Выбрано продуктов: {selectedProducts.length}
+                </span>
+                <Button
+                  type="button"
+                  onClick={() => setShowLibraryDialog(false)}
+                  className="bg-indigo-800 hover:bg-indigo-500 text-white"
+                >
+                  Готово
+                </Button>
+              </div>
+            )}
           </DialogContent>
         </Dialog>
       )}
@@ -668,7 +871,7 @@ const MealForm = () => {
                 onClick={handleSelectLibraryProduct}
               >
                 <Plus className="w-5 h-5 mr-2" />
-                Добавить
+                Добавить {selectedProducts.length > 0 ? "еще" : ""}
               </Button>
             </div>
           </DialogContent>
