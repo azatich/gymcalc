@@ -20,7 +20,6 @@ import { useProfileQuery } from "../hooks/useProfileQuery";
 import CalculatedStats from "./CalculatedStats";
 import MacrosRecommendation from "./MacrosRecommendation";
 import { activityLabels, goalLabels } from "../constants/constants";
-import { validateProfileForm } from "@/lib/validationForms";
 
 const ProfileForm = () => {
   const updateProfile = useProfileFormMutation();
@@ -68,46 +67,76 @@ const ProfileForm = () => {
   );
 
   const handleSubmit = () => {
-    const isValid = validateProfileForm(formData, setErrors);
+    const newErrors: Record<string, string> = {};
+
+    if (!formData.name.trim()) {
+      newErrors.name = "Имя обьязательна";
+    }
+
+    if (!formData.age) {
+      newErrors.age = "Возвраст обьязательно";
+    }
+
+    if (!formData.height) {
+      newErrors.height = "Рост обьязательно";
+    }
+
+    if (!formData.weight) {
+      newErrors.weight = "Вес обьязательно";
+    }
+
+    if (!formData.activity_level) {
+      newErrors.activity_level = "Уровень активности обьязательно";
+    }
+
+    if (!formData.goal) {
+      newErrors.goal = "Цель обьязательна";
+    }
+
+    setErrors(newErrors);
+
+    const isValid = Object.keys(newErrors).length === 0;
 
     if (!isValid) {
-      setTimeout(() => {
-        if (errors.name)
-          nameRef.current?.scrollIntoView({
-            behavior: "smooth",
-            block: "center",
-          });
-        else if (errors.age)
-          ageRef.current?.scrollIntoView({
-            behavior: "smooth",
-            block: "center",
-          });
-        else if (errors.gender)
-          genderRef.current?.scrollIntoView({
-            behavior: "smooth",
-            block: "center",
-          });
-        else if (errors.height)
-          heightRef.current?.scrollIntoView({
-            behavior: "smooth",
-            block: "center",
-          });
-        else if (errors.weight)
-          weightRef.current?.scrollIntoView({
-            behavior: "smooth",
-            block: "center",
-          });
-        else if (errors.activity_level)
-          activityLevelRef.current?.scrollIntoView({
-            behavior: "smooth",
-            block: "center",
-          });
-        else if (errors.goal)
-          goalRef.current?.scrollIntoView({
-            behavior: "smooth",
-            block: "center",
-          });
-      }, 50);
+      requestAnimationFrame(() => {
+        setTimeout(() => {
+          if (newErrors.name)
+            nameRef.current?.scrollIntoView({
+              behavior: "smooth",
+              block: "center",
+            });
+          else if (newErrors.age)
+            ageRef.current?.scrollIntoView({
+              behavior: "smooth",
+              block: "center",
+            });
+          else if (newErrors.gender)
+            genderRef.current?.scrollIntoView({
+              behavior: "smooth",
+              block: "center",
+            });
+          else if (newErrors.height)
+            heightRef.current?.scrollIntoView({
+              behavior: "smooth",
+              block: "center",
+            });
+          else if (newErrors.weight)
+            weightRef.current?.scrollIntoView({
+              behavior: "smooth",
+              block: "center",
+            });
+          else if (newErrors.activity_level)
+            activityLevelRef.current?.scrollIntoView({
+              behavior: "smooth",
+              block: "center",
+            });
+          else if (newErrors.goal)
+            goalRef.current?.scrollIntoView({
+              behavior: "smooth",
+              block: "center",
+            });
+        }, 100);
+      });
 
       return;
     }

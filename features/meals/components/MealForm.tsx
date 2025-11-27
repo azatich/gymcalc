@@ -25,7 +25,6 @@ import { useMemo, useRef, useState, useEffect } from "react";
 import { getAvailableCategories } from "@/lib/getAvailableCategories";
 import { useMealMutation } from "../hooks/useMealMutation";
 import { createTextChangeHandler } from "@/lib/useFormHandlers";
-import { validateMealForm } from "@/lib/validationForms";
 import SearchInput from "@/components/SearchInput";
 import { formatNumber } from "@/lib/formatNumber";
 
@@ -108,7 +107,6 @@ const MealForm = () => {
   };
 
   const handleSubmit = () => {
-    // Validate and get errors directly
     const newErrors: Record<string, string> = {};
 
     if (!formData.name || !formData.name.trim()) {
@@ -137,7 +135,6 @@ const MealForm = () => {
     const isValid = Object.keys(newErrors).length === 0;
 
     if (!isValid) {
-      // Use requestAnimationFrame to ensure DOM is updated with errors
       requestAnimationFrame(() => {
         setTimeout(() => {
           if (newErrors.time)
