@@ -11,6 +11,9 @@ const Mealtime = () => {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const { data: foods, isPending: isLoadingFoods } = useMealQuery(selectedDate);
 
+  console.log(foods);
+  
+
   const goToPreviousDate = () => {
     setSelectedDate((prev) => {
       const newDate = new Date(prev);
@@ -63,6 +66,7 @@ const Mealtime = () => {
           </div>
           <Button
             onClick={goToNextDate}
+            disabled={isToday}
             size="icon"
             className="border border-gray-400 hover:bg-gray-100"
           >
@@ -116,6 +120,7 @@ const Mealtime = () => {
             {foods.map((food) => (
               <MealItemCard
                 key={food.id}
+                id={food.id}
                 name={food.name}
                 portion={food.portion}
                 calories={food.calories}

@@ -1,21 +1,20 @@
+import { api } from "@/lib/axios";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { MealFormData } from "../types";
 import { mealApi } from "../api/api";
 import { toast } from "sonner";
-import { queryClient } from "@/shared/api/query-client";
 
-export const useMealMutation = () => {
+export const useMealDeleteMutation = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (data: MealFormData) => mealApi.addMeal(data),
+    mutationFn: async (mealId: string) => mealApi.deleteMeal(mealId),
     onSuccess: async () => {
       await queryClient.invalidateQueries({
         queryKey: [mealApi.baseKey],
-        refetchType: 'active',
+        refetchType: "active",
       });
 
-      toast.success("Прием пищи добавлен успешно!", {
+      toast.success("Прием пищи удален успешно!", {
         duration: 2500,
         icon: "✅",
         position: "top-center",
@@ -33,7 +32,7 @@ export const useMealMutation = () => {
     },
 
     onError: () =>
-      toast.error("Не удалось добавить прием пищи", {
+      toast.error("Не удалось удалить прием пищи", {
         duration: 4000,
         icon: "❌",
         style: {

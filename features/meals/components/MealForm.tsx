@@ -198,7 +198,6 @@ const MealForm = () => {
     setSelectedProducts([]); // Clear selected products after submission
   };
 
-  // Calculate totals from all selected products
   const calculateTotals = useMemo(() => {
     return selectedProducts.reduce(
       (acc, item) => {
@@ -215,8 +214,6 @@ const MealForm = () => {
       { calories: 0, proteins: 0, fats: 0, carbs: 0 }
     );
   }, [selectedProducts]);
-
-  console.log(formData);
 
   useEffect(() => {
     if (selectedProducts.length > 0) {

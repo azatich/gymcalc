@@ -11,12 +11,17 @@ export const mealApi = {
       offset: timezoneOffset,
     });
     
-    const res = await api.get(`/meal?${params.toString()}`);
+    const res = await api.get(`/meals?${params.toString()}`);
     return res.data.data;
   },
 
   addMeal: async (data: MealFormData) => {
-    const res = await api.post("/meal", data);
+    const res = await api.post("/meals", data);
     return res.data;
   },
+
+  deleteMeal: async (id: string) => {
+    const res = await api.delete(`/meals/${id}`);
+    return res.data;
+  }
 };

@@ -1,6 +1,9 @@
+import { useMealDeleteMutation } from "@/features/meals/hooks/useMealDeleteMutation";
+import { Loader2, PencilLine, Trash2 } from "lucide-react";
 import React from "react";
 
 const MealItemCard = ({
+  id,
   name,
   portion,
   calories,
@@ -9,6 +12,7 @@ const MealItemCard = ({
   carbs,
   time,
 }: {
+  id: string;
   name: string;
   portion: string;
   calories: number;
@@ -17,6 +21,8 @@ const MealItemCard = ({
   carbs: number;
   time: string;
 }) => {
+  const deleteMeal = useMealDeleteMutation();
+
   return (
     <div className="relative overflow-hidden">
       <div className="bg-white rounded-2xl p-5 border border-gray-100 transition-all duration-300">
@@ -33,6 +39,25 @@ const MealItemCard = ({
               )}
             </div>
           </div>
+
+          <div className="flex items-start gap-2 mr-4">
+            <button className="p-2 hover:bg-gray-100 rounded-xl transition">
+              <PencilLine size={18} className="text-gray-600" />
+            </button>
+
+            <button
+              onClick={() => deleteMeal.mutate(id)}
+              disabled={deleteMeal.isPending}
+              className="p-2 hover:bg-red-100 rounded-xl transition"
+            >
+              {deleteMeal.isPending ? (
+                <Loader2 className="w-4 h-4 animate-spin text-red-600" />
+              ) : (
+                <Trash2 size={18} className="text-red-600" />
+              )}
+            </button>
+          </div>
+
           <div className="text-right">
             <div className="text-2xl text-primary">{calories}</div>
             <div className="text-xs text-gray-500">ккал</div>
