@@ -3,7 +3,7 @@
 import { useMealDeleteMutation } from "@/features/meals/hooks/useMealDeleteMutation";
 import { useMealUpdateMutation } from "@/features/meals/hooks/useMealUpdateMutation";
 import { Edit2, Loader2, PencilLine, Trash2 } from "lucide-react";
-import React, { useState } from "react";
+import React, { useState, memo } from "react";
 import {
   Dialog,
   DialogContent,
@@ -391,4 +391,4 @@ const MealItemCard = ({
   );
 };
 
-export default MealItemCard;
+export default memo(MealItemCard);

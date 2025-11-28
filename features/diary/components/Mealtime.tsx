@@ -6,7 +6,25 @@ import { Button } from "@/components/ui/button";
 import { Calendar, ChevronLeft, ChevronRight } from "lucide-react";
 import { useState, useMemo, useCallback } from "react";
 import { formatDateToRU } from "@/lib/formatDate";
-import DailyCalculatedStats from "./DailyCalculatedStats";
+import dynamic from "next/dynamic";
+
+const DailyCalculatedStats = dynamic(() => import("./DailyCalculatedStats"), {
+  loading: () => (
+    <div className="bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-3xl p-8 text-white shadow-lg animate-pulse">
+      <div className="h-8 bg-indigo-400 rounded-xl w-48 mb-6"></div>
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        {[1, 2, 3, 4].map((i) => (
+          <div key={i} className="space-y-2">
+            <div className="h-4 bg-indigo-400 rounded w-20"></div>
+            <div className="h-10 bg-indigo-400 rounded w-24"></div>
+            <div className="h-4 bg-indigo-400 rounded w-16"></div>
+          </div>
+        ))}
+      </div>
+    </div>
+  ),
+  ssr: false,
+});
 
 
 const Mealtime = () => {
