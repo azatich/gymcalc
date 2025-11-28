@@ -4,33 +4,54 @@ import { useMealQuery } from "@/features/meals/hooks/useMealQuery";
 import MealItemCard from "./MealItemCard";
 import { Button } from "@/components/ui/button";
 import { Calendar, ChevronLeft, ChevronRight } from "lucide-react";
-import { useState } from "react";
+import { useState, useMemo, useCallback } from "react";
 import { formatDateToRU } from "@/lib/formatDate";
+import DailyCalculatedStats from "./DailyCalculatedStats";
+
 
 const Mealtime = () => {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const { data: foods, isPending: isLoadingFoods } = useMealQuery(selectedDate);
 
-  console.log(foods);
-  
-
-  const goToPreviousDate = () => {
+  const goToPreviousDate = useCallback(() => {
     setSelectedDate((prev) => {
       const newDate = new Date(prev);
       newDate.setDate(prev.getDate() - 1);
       return newDate;
     });
-  };
+  }, []);
 
-  const goToNextDate = () => {
+  const goToNextDate = useCallback(() => {
     setSelectedDate((prev) => {
       const newDate = new Date(prev);
       newDate.setDate(prev.getDate() + 1);
       return newDate;
     });
-  };
+  }, []);
 
-  const isToday = new Date().toDateString() === selectedDate.toDateString();
+  const goToToday = useCallback(() => {
+    setSelectedDate(new Date());
+  }, []);
+
+  const isToday = useMemo(
+    () => new Date().toDateString() === selectedDate.toDateString(),
+    [selectedDate]
+  );
+
+  const formattedDate = useMemo(
+    () => formatDateToRU(selectedDate),
+    [selectedDate]
+  );
+
+  const mealsCount = useMemo(() => {
+    if (!foods) return 0;
+    return foods.length;
+  }, [foods]);
+
+  const mealsCountText = useMemo(() => {
+    if (mealsCount === 0) return null;
+    return `${mealsCount} ${mealsCount === 1 ? "запись" : "записей"}`;
+  }, [mealsCount]);
 
   return (
     <div className="space-y-6">
@@ -50,12 +71,12 @@ const Mealtime = () => {
               <div className="flex items-center gap-3">
                 <Calendar className="w-5 h-5 text-primary" />
                 <div>
-                  <p className="text-lg">{formatDateToRU(selectedDate)}</p>
+                  <p className="text-lg">{formattedDate}</p>
                 </div>
               </div>
               {!isToday && (
                 <Button
-                  onClick={() => setSelectedDate(new Date())}
+                  onClick={goToToday}
                   variant="outline"
                   className="rounded-xl hover:bg-gray-100"
                 >
@@ -75,17 +96,17 @@ const Mealtime = () => {
         </div>
       </div>
 
+      <DailyCalculatedStats foods={foods} />
+
+
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <h2 className="text-xl">Приемы пищи</h2>
           {isLoadingFoods ? (
             <span className="w-16 h-4 rounded-xl bg-gray-200 animate-pulse"></span>
           ) : (
-            foods &&
-            foods.length > 0 && (
-              <span className="text-sm">
-                {foods.length} {foods.length === 1 ? "запись" : "записей"}
-              </span>
+            mealsCountText && (
+              <span className="text-sm">{mealsCountText}</span>
             )
           )}
         </div>

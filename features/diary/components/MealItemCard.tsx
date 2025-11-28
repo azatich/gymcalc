@@ -2,8 +2,8 @@
 
 import { useMealDeleteMutation } from "@/features/meals/hooks/useMealDeleteMutation";
 import { useMealUpdateMutation } from "@/features/meals/hooks/useMealUpdateMutation";
-import { Loader2, PencilLine, Trash2 } from "lucide-react";
-import React, { useState, useEffect } from "react";
+import { Edit2, Loader2, PencilLine, Trash2 } from "lucide-react";
+import React, { useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -56,12 +56,26 @@ const MealItemCard = ({
     proteins,
     fats,
     carbs,
-    time: time || "",
+    time,
     mealtime: mealtime || "",
   });
 
-  useEffect(() => {
-    if (showEditMealModal) {
+  const handleSubmit = async () => {
+    try {
+      await updateMeal.mutateAsync({
+        id,
+        data: formData,
+      });
+      setShowEditMealModal(false);
+    } catch (error) {
+      // Error handling is done in the mutation
+    }
+  };
+
+  const handleOpenChange = (open: boolean) => {
+    setShowEditMealModal(open);
+    if (open) {
+      // Reset form data to current values when opening the modal
       setFormData({
         name,
         portion,
@@ -69,21 +83,10 @@ const MealItemCard = ({
         proteins,
         fats,
         carbs,
-        time: time || "",
+        time,
         mealtime: mealtime || "",
       });
     }
-  }, [showEditMealModal, name, portion, calories, proteins, fats, carbs, time, mealtime]);
-
-  const handleSubmit = () => {
-    updateMeal.mutate(
-      { id, data: formData },
-      {
-        onSuccess: () => {
-          setShowEditMealModal(false);
-        },
-      }
-    );
   };
 
   return (
@@ -95,14 +98,14 @@ const MealItemCard = ({
             <div className="flex items-center gap-2 text-sm text-gray-500">
               {mealtime && (
                 <>
-                  <span className="font-medium text-gray-700">{mealtime}</span>
-                  {(time || portion) && <span>•</span>}
+                  <span className="capitalize">{mealtime}</span>
+                  <span>•</span>
                 </>
               )}
-              {portion && <span>{portion}</span>}
+              <span>{portion}</span>
               {time && (
                 <>
-                  {(mealtime || portion) && <span>•</span>}
+                  <span>•</span>
                   <span>{time}</span>
                 </>
               )}
@@ -112,7 +115,7 @@ const MealItemCard = ({
           <div className="flex items-start gap-2 mr-4">
             <Dialog
               open={showEditMealModal}
-              onOpenChange={setShowEditMealModal}
+              onOpenChange={handleOpenChange}
             >
               <DialogTrigger asChild>
                 <Button
@@ -130,22 +133,6 @@ const MealItemCard = ({
                 </DialogHeader>
 
                 <div className="space-y-5">
-                  <div className="space-y-2">
-                    <Label htmlFor="modal-name" className="text-base">
-                      Название продукта
-                    </Label>
-                    <Input
-                      type="text"
-                      id="modal-name"
-                      placeholder="Например: Куриная грудка"
-                      className="h-14 text-lg rounded-xl"
-                      value={formData.name}
-                      onChange={(e) =>
-                        setFormData({ ...formData, name: e.target.value })
-                      }
-                    />
-                  </div>
-
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                     <div className="space-y-2">
                       <Label htmlFor="modal-mealtime" className="text-base">
@@ -153,9 +140,9 @@ const MealItemCard = ({
                       </Label>
                       <Select
                         value={formData.mealtime}
-                        onValueChange={(value) =>
-                          setFormData({ ...formData, mealtime: value })
-                        }
+                        onValueChange={(value) => {
+                          setFormData({ ...formData, mealtime: value });
+                        }}
                       >
                         <SelectTrigger className="h-14 text-lg rounded-xl">
                           <SelectValue placeholder="Выберите прием пищи" />
@@ -203,6 +190,22 @@ const MealItemCard = ({
                         }
                       />
                     </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="modal-name" className="text-base">
+                      Название продукта
+                    </Label>
+                    <Input
+                      type="text"
+                      id="modal-name"
+                      placeholder="Например: Куриная грудка"
+                      className="h-14 text-lg rounded-xl"
+                      value={formData.name}
+                      onChange={(e) =>
+                        setFormData({ ...formData, name: e.target.value })
+                      }
+                    />
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-5">

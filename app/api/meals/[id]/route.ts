@@ -44,6 +44,7 @@ export async function PATCH(
   { params }: { params: Promise<{ id: string }> }
 ) {
   const supabase = await createClient();
+  const body = await req.json();
 
   const {
     data: { user },
@@ -51,9 +52,7 @@ export async function PATCH(
   } = await supabase.auth.getUser();
 
   if (!user || userError) {
-    return new Response(JSON.stringify({ error: "Unauthorized" }), {
-      status: 401,
-    });
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
   const { id } = await params;
@@ -62,7 +61,6 @@ export async function PATCH(
     return NextResponse.json({ error: "Missing meal ID" }, { status: 400 });
   }
 
-  const body = await req.json();
   const { name, time, mealtime, portion, calories, proteins, carbs, fats } =
     body;
 
@@ -73,10 +71,10 @@ export async function PATCH(
       time,
       mealtime,
       portion,
-      proteins,
-      fats,
-      carbs,
       calories,
+      proteins,
+      carbs,
+      fats,
     })
     .eq("id", id)
     .eq("user_id", user.id)

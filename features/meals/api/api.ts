@@ -25,7 +25,7 @@ export const mealApi = {
     return res.data;
   },
 
-  updateMeal: async ({ id, data }: { id: string; data: MealFormData }) => {
+  updateMeal: async (id: string, data: MealFormData) => {
     const res = await api.patch(`/meals/${id}`, data);
     return res.data;
   }

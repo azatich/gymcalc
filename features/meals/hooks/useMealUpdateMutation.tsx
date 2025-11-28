@@ -1,18 +1,18 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { MealFormData } from "../types";
 import { mealApi } from "../api/api";
+import { MealFormData } from "../types";
 import { toast } from "sonner";
 
 export const useMealUpdateMutation = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ id, data }: { id: string; data: MealFormData }) =>
-      mealApi.updateMeal({ id, data }),
+    mutationFn: async ({ id, data }: { id: string; data: MealFormData }) =>
+      mealApi.updateMeal(id, data),
     onSuccess: async () => {
       await queryClient.invalidateQueries({
         queryKey: [mealApi.baseKey],
-        refetchType: 'active',
+        refetchType: "active",
       });
 
       toast.success("Прием пищи обновлен успешно!", {
@@ -45,4 +45,3 @@ export const useMealUpdateMutation = () => {
       }),
   });
 };
-
