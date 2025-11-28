@@ -38,3 +38,54 @@ export async function DELETE(
 
   return NextResponse.json({ data });
 }
+
+export async function PATCH(
+  req: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+    error: userError,
+  } = await supabase.auth.getUser();
+
+  if (!user || userError) {
+    return new Response(JSON.stringify({ error: "Unauthorized" }), {
+      status: 401,
+    });
+  }
+
+  const { id } = await params;
+
+  if (!id) {
+    return NextResponse.json({ error: "Missing meal ID" }, { status: 400 });
+  }
+
+  const body = await req.json();
+  const { name, time, mealtime, portion, calories, proteins, carbs, fats } =
+    body;
+
+  const { data, error } = await supabase
+    .from("meals")
+    .update({
+      name,
+      time,
+      mealtime,
+      portion,
+      proteins,
+      fats,
+      carbs,
+      calories,
+    })
+    .eq("id", id)
+    .eq("user_id", user.id)
+    .select()
+    .single();
+
+  if (error) {
+    return NextResponse.json({ error: error.message }, { status: 400 });
+  }
+
+  return NextResponse.json({ data });
+}

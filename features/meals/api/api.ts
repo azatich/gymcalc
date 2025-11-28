@@ -23,5 +23,10 @@ export const mealApi = {
   deleteMeal: async (id: string) => {
     const res = await api.delete(`/meals/${id}`);
     return res.data;
+  },
+
+  updateMeal: async ({ id, data }: { id: string; data: MealFormData }) => {
+    const res = await api.patch(`/meals/${id}`, data);
+    return res.data;
   }
 };

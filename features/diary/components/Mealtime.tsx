@@ -128,6 +128,7 @@ const Mealtime = () => {
                 fats={food.fats}
                 carbs={food.carbs}
                 time={food.time}
+                mealtime={food.mealtime}
               />
             ))}
           </div>
