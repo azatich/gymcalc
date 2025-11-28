@@ -60,7 +60,7 @@ const CalculatedStats = ({
           <div className="text-4xl mb-1">
             {!bmr || bmr < 0 ? (
               <span className="text-lg">
-                Введите рост и вес для расчета ИМТ
+                Введите рост и вес для расчета базового метоболизма
               </span>
             ) : (
               bmr
