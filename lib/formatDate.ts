@@ -30,3 +30,16 @@ export const formatDateToRU = (date: Date): string => {
 
   return `${weekdayRu}, ${dayAndMonthRu}`;
 };
+
+export const formatDateToWeekDayMonthRU = (date: Date): string => {
+ const weekdayRu = date.toLocaleDateString("ru-RU", {
+    weekday: "long",
+  });
+
+  const dayAndMonthRu = date.toLocaleDateString("ru-RU", {
+    day: "numeric",
+    month: "long",
+  });
+
+  return `${weekdayRu}, ${dayAndMonthRu}`;
+}

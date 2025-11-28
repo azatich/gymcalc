@@ -1,13 +1,13 @@
 # 📁 gymcalc - Project Structure
 
-*Generated on: 11/22/2025, 4:50:16 AM*
+*Generated on: 11/29/2025, 3:40:04 AM*
 
 ## 📋 Quick Overview
 
 | Metric | Value |
 |--------|-------|
-| 📄 Total Files | 79 |
-| 📁 Total Folders | 40 |
+| 📄 Total Files | 107 |
+| 📁 Total Folders | 62 |
 | 🌳 Max Depth | 4 levels |
 | 🛠️ Tech Stack | React, Next.js, TypeScript, CSS, Node.js |
 
@@ -25,31 +25,31 @@
 
 ### By File Type
 
-- ⚛️ **.tsx** (React TypeScript files): 39 files (49.4%)
-- 🔷 **.ts** (TypeScript files): 30 files (38.0%)
-- ⚙️ **.json** (JSON files): 4 files (5.1%)
-- 📄 **.mjs** (Other files): 2 files (2.5%)
-- 📖 **.md** (Markdown files): 2 files (2.5%)
-- 🚫 **.gitignore** (Git ignore): 1 files (1.3%)
-- 🎨 **.css** (Stylesheets): 1 files (1.3%)
+- ⚛️ **.tsx** (React TypeScript files): 56 files (52.3%)
+- 🔷 **.ts** (TypeScript files): 41 files (38.3%)
+- ⚙️ **.json** (JSON files): 4 files (3.7%)
+- 📄 **.mjs** (Other files): 2 files (1.9%)
+- 📖 **.md** (Markdown files): 2 files (1.9%)
+- 🚫 **.gitignore** (Git ignore): 1 files (0.9%)
+- 🎨 **.css** (Stylesheets): 1 files (0.9%)
 
 ### By Category
 
-- **React**: 39 files (49.4%)
-- **TypeScript**: 30 files (38.0%)
-- **Config**: 4 files (5.1%)
-- **Other**: 2 files (2.5%)
-- **Docs**: 2 files (2.5%)
-- **DevOps**: 1 files (1.3%)
-- **Styles**: 1 files (1.3%)
+- **React**: 56 files (52.3%)
+- **TypeScript**: 41 files (38.3%)
+- **Config**: 4 files (3.7%)
+- **Other**: 2 files (1.9%)
+- **Docs**: 2 files (1.9%)
+- **DevOps**: 1 files (0.9%)
+- **Styles**: 1 files (0.9%)
 
 ### 📁 Largest Directories
 
-- **root**: 79 files
-- **app**: 24 files
-- **features**: 20 files
-- **features\library**: 13 files
-- **components**: 12 files
+- **root**: 107 files
+- **features**: 40 files
+- **app**: 27 files
+- **components**: 15 files
+- **features\library**: 12 files
 
 ## 🌳 Directory Structure
 
@@ -58,10 +58,14 @@ gymcalc/
 ├── 🟡 🚫 **.gitignore**
 ├── 🚀 app/
 │   ├── 📂 (private)/
+│   │   ├── 📂 diary/
+│   │   │   └── ⚛️ page.tsx
 │   │   ├── 📂 home/
 │   │   │   └── ⚛️ page.tsx
 │   │   ├── ⚛️ layout.tsx
 │   │   ├── 📂 library/
+│   │   │   └── ⚛️ page.tsx
+│   │   ├── 📂 meals/
 │   │   │   └── ⚛️ page.tsx
 │   │   └── 📂 profile/
 │   │   │   └── ⚛️ page.tsx
@@ -86,10 +90,14 @@ gymcalc/
 │   │   ├── 📂 auth/
 │   │   │   └── 📂 me/
 │   │   │   │   └── 🔷 route.ts
+│   │   ├── 📂 category/
+│   │   │   └── 🔷 route.ts
 │   │   ├── 📂 library/
 │   │   │   ├── 📂 [id]/
 │   │   │   │   └── 🔷 route.ts
-│   │   │   ├── 📂 add/
+│   │   │   └── 🔷 route.ts
+│   │   ├── 📂 meals/
+│   │   │   ├── 📂 [id]/
 │   │   │   │   └── 🔷 route.ts
 │   │   │   └── 🔷 route.ts
 │   │   └── 📂 profile/
@@ -98,12 +106,12 @@ gymcalc/
 │   ├── ⚛️ page.tsx
 │   ├── 📂 providers/
 │   │   ├── ⚛️ query-provider.tsx
-│   │   ├── ⚛️ theme-provider.tsx
 │   │   └── ⚛️ toaster.tsx
 │   └── 🎨 styles/
 │   │   └── 🎨 globals.css
 ├── 🧩 components/
 │   ├── ⚛️ LoginLogoutButton.tsx
+│   ├── ⚛️ SearchInput.tsx
 │   ├── ⚛️ Sidebar.tsx
 │   ├── ⚛️ SidebarClient.tsx
 │   ├── ⚛️ ThemeToggle.tsx
@@ -113,12 +121,35 @@ gymcalc/
 │   │   ├── ⚛️ dialog.tsx
 │   │   ├── ⚛️ input.tsx
 │   │   ├── ⚛️ label.tsx
+│   │   ├── ⚛️ progress.tsx
+│   │   ├── ⚛️ scroll-area.tsx
 │   │   ├── ⚛️ select.tsx
 │   │   └── ⚛️ sonner.tsx
 │   └── ⚛️ UserGreetText.tsx
 ├── ⚙️ components.json
 ├── 🔵 🔍 **eslint.config.mjs**
 ├── 📂 features/
+│   ├── 📂 diary/
+│   │   ├── 🧩 components/
+│   │   │   ├── ⚛️ DailyCalculatedStats.tsx
+│   │   │   ├── ⚛️ MealItemCard.tsx
+│   │   │   └── ⚛️ Mealtime.tsx
+│   │   ├── 📂 constants/
+│   │   │   └── 🔷 index.ts
+│   │   ├── 🎣 hooks/
+│   │   └── 📂 types/
+│   │   │   └── 🔷 index.ts
+│   ├── 📂 food_category/
+│   │   ├── 🔌 api/
+│   │   │   └── 🔷 api.ts
+│   │   ├── 🎣 hooks/
+│   │   │   └── ⚛️ useFoodCategoryQuery.tsx
+│   │   └── 📂 types/
+│   │   │   └── 🔷 index.ts
+│   ├── 📂 home/
+│   │   └── 🧩 components/
+│   │   │   ├── ⚛️ CircularProgress.tsx
+│   │   │   └── ⚛️ Header.tsx
 │   ├── 📂 library/
 │   │   ├── 🔌 api/
 │   │   │   └── 🔷 api.ts
@@ -129,38 +160,57 @@ gymcalc/
 │   │   │   ├── ⚛️ FoodLists.tsx
 │   │   │   ├── ⚛️ FoodListsSkeleton.tsx
 │   │   │   └── ⚛️ SearchProduct.tsx
-│   │   ├── 🔷 constants.ts
 │   │   ├── 🎣 hooks/
 │   │   │   ├── 🔷 useDeleteFoodLibraryMutation.ts
 │   │   │   ├── 🔷 useFoodLibraryMutation.ts
 │   │   │   ├── 🔷 useFoodLibraryQuery.ts
-│   │   │   └── 🔷 useUpdateFoodFromLibraryMutation.ts
+│   │   │   └── 🔷 useUpdateFoodLibraryMutation.ts
 │   │   └── 📂 types/
-│   │   │   └── 🔷 types.ts
+│   │   │   └── 🔷 index.ts
+│   ├── 📂 meals/
+│   │   ├── 🔌 api/
+│   │   │   └── 🔷 api.ts
+│   │   ├── 🧩 components/
+│   │   │   ├── ⚛️ Header.tsx
+│   │   │   └── ⚛️ MealForm.tsx
+│   │   ├── 🎣 hooks/
+│   │   │   ├── ⚛️ useMealDeleteMutation.tsx
+│   │   │   ├── ⚛️ useMealMutation.tsx
+│   │   │   ├── ⚛️ useMealQuery.tsx
+│   │   │   └── ⚛️ useMealUpdateMutation.tsx
+│   │   └── 📂 types/
+│   │   │   └── 🔷 index.ts
 │   └── 📂 profile/
 │   │   ├── 🔌 api/
 │   │   │   └── 🔷 api.ts
 │   │   ├── 🧩 components/
 │   │   │   ├── ⚛️ CalculatedStats.tsx
 │   │   │   ├── ⚛️ Header.tsx
+│   │   │   ├── ⚛️ MacrosRecommendation.tsx
 │   │   │   └── ⚛️ ProfileForm.tsx
+│   │   ├── 📂 constants/
+│   │   │   └── 🔷 constants.ts
 │   │   ├── 🎣 hooks/
 │   │   │   ├── ⚛️ useProfileFormMutation.tsx
 │   │   │   └── ⚛️ useProfileQuery.tsx
+│   │   ├── 📚 lib/
+│   │   │   └── 🔷 calculations.ts
 │   │   └── 📂 types/
-│   │   │   └── 🔷 types.ts
+│   │   │   └── 🔷 index.ts
 ├── 📚 lib/
 │   ├── 🔷 auth-actions.ts
 │   ├── 🔷 axios.ts
+│   ├── 🔷 formatDate.ts
+│   ├── 🔷 formatNumber.ts
+│   ├── 🔷 getAvailableCategories.ts
 │   ├── 📂 supabase/
 │   │   ├── 🔷 client.ts
 │   │   ├── 🔷 middleware.ts
 │   │   └── 🔷 server.ts
 │   ├── 🔷 useFormHandlers.ts
 │   ├── 🔷 utils.ts
-│   ├── 🔷 validationLoginSignupForms.ts
-│   ├── 🔷 validationProductAddForm.ts
-│   └── 🔷 validationProfileForm.ts
+│   ├── 🔷 validationForms.ts
+│   └── 🔷 validationLoginSignupForms.ts
 ├── 🔷 middleware.ts
 ├── 🔷 next-env.d.ts
 ├── 🟡 ▲ **next.config.ts**

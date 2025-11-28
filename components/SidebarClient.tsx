@@ -40,7 +40,7 @@ export default function SidebarClient({ user }: { user: UserData }) {
     { id: "diary" as Screen, label: "Дневник", icon: ListChecks },
     { id: "meals" as Screen, label: "Добавить", icon: PlusCircle },
     { id: "library" as Screen, label: "Библиотека", icon: Database },
-    { id: "progress" as Screen, label: "Прогресс", icon: TrendingUp },
+    // { id: "progress" as Screen, label: "Прогресс", icon: TrendingUp },
     { id: "profile" as Screen, label: "Профиль", icon: User },
   ];
 
