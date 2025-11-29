@@ -36,7 +36,7 @@ const MealItemCard = ({
 }: {
   id: string;
   name: string;
-  portion: string;
+  portion: number;
   calories: number;
   proteins: number;
   fats: number;
@@ -220,7 +220,7 @@ const MealItemCard = ({
                         className="h-14 text-lg rounded-xl"
                         value={formData.portion}
                         onChange={(e) =>
-                          setFormData({ ...formData, portion: e.target.value })
+                          setFormData({ ...formData, portion: Number(e.target.value) })
                         }
                       />
                     </div>
