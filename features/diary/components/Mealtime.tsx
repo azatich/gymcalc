@@ -7,6 +7,7 @@ import { Calendar, ChevronLeft, ChevronRight } from "lucide-react";
 import { useState, useMemo, useCallback } from "react";
 import { formatDateToRU } from "@/lib/formatDate";
 import dynamic from "next/dynamic";
+import { motion } from "framer-motion";
 
 const DailyCalculatedStats = dynamic(() => import("./DailyCalculatedStats"), {
   loading: () => (
@@ -25,7 +26,6 @@ const DailyCalculatedStats = dynamic(() => import("./DailyCalculatedStats"), {
   ),
   ssr: false,
 });
-
 
 const Mealtime = () => {
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -74,7 +74,14 @@ const Mealtime = () => {
   return (
     <div className="space-y-6">
       <div className="mb-8">
-        <h1 className="text-4xl mb-4">Дневник питания</h1>
+        <motion.h1
+          initial={{ y: 10, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.5, ease: "easeInOut" }}
+          className="text-4xl mb-4"
+        >
+          Дневник питания
+        </motion.h1>
 
         <div className="flex items-center gap-3">
           <Button
@@ -116,16 +123,13 @@ const Mealtime = () => {
 
       <DailyCalculatedStats foods={foods} />
 
-
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <h2 className="text-xl">Приемы пищи</h2>
           {isLoadingFoods ? (
             <span className="w-16 h-4 rounded-xl bg-gray-200 animate-pulse"></span>
           ) : (
-            mealsCountText && (
-              <span className="text-sm">{mealsCountText}</span>
-            )
+            mealsCountText && <span className="text-sm">{mealsCountText}</span>
           )}
         </div>
 

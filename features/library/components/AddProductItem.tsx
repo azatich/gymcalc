@@ -5,6 +5,7 @@ import { Loader2, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { motion } from "framer-motion";
 import {
   Select,
   SelectContent,
@@ -95,21 +96,38 @@ const AddProductItem = () => {
   };
 
   return (
-    <div className="space-y-6 p-6">
+    <div className="space-y-6">
       <div className="flex flex-col items-start gap-4 md:flex-row md:items-center md:justify-between">
         <div>
-          <h1 className="text-4xl font-bold mb-2">Библиотека продуктов</h1>
-          <p className="text-lg text-gray-600">
+          <motion.h1
+            initial={{ y: 10, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ duration: 0.5, ease: "easeInOut" }}
+            className="text-3xl md:text-4xl mb-2"
+          >
+            Библиотека продуктов
+          </motion.h1>
+          <motion.p
+            initial={{ y: 10, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ duration: 0.5, delay: 0.2, ease: "easeInOut" }}
+            className="text-lg text-gray-600"
+          >
             Добавьте продукты с их КБЖУ, чтобы быстро составлять приёмы пищи
-          </p>
+          </motion.p>
         </div>
 
         <Dialog open={showAddModal} onOpenChange={handleCloseModal}>
           <DialogTrigger asChild>
-            <Button className="bg-indigo-800 hover:bg-indigo-500 text-white flex items-center w-full md:w-auto h-12 px-6 rounded-xl shadow-md transition-colors duration-200">
+            <motion.button
+              initial={{ y: 10, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ duration: 0.5, ease: "easeInOut" }}
+              className="bg-indigo-800 hover:bg-indigo-500 text-white flex items-center w-full md:w-auto h-12 px-6 rounded-xl shadow-md transition-colors duration-200"
+            >
               <Plus className="w-5 h-5 mr-2" />
               Добавить продукт
-            </Button>
+            </motion.button>
           </DialogTrigger>
 
           <DialogContent
