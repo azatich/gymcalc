@@ -1,4 +1,7 @@
+'use client'
+
 import { LucideIcon } from "lucide-react";
+import { motion } from "framer-motion";
 
 interface StatCardProps {
   title: string;
@@ -20,7 +23,9 @@ export function StatCard({
   progress,
 }: StatCardProps) {
   return (
-    <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
+    <motion.div
+      className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 hover:shadow-md transition-shadow"
+    >
       <div className="flex items-start justify-between mb-3">
         <div className="text-sm text-gray-600">{title}</div>
         {Icon && (
@@ -36,12 +41,14 @@ export function StatCard({
       </div>
       {progress !== undefined && (
         <div className="w-full bg-gray-100 rounded-full h-2 overflow-hidden">
-          <div
+          <motion.div
+            initial={{ width: 0 }}
+            animate={{ width: `${Math.min(progress, 100)}%` }}
+            transition={{ ease: "easeInOut" }}
             className="bg-black h-full rounded-full transition-all duration-500"
-            style={{ width: `${Math.min(progress, 100)}%` }}
           />
         </div>
       )}
-    </div>
+    </motion.div>
   );
 }

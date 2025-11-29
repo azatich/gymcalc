@@ -1,11 +1,16 @@
-'use client'
+"use client";
 
 import { Clock, ListChecks, TrendingUp } from "lucide-react";
+import { motion } from "framer-motion";
 
 const QuickActions = () => {
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-      <button
+      <motion.button
+        initial={{ opacity: 0, y: 25 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3, delay: 0.1 }}
+        viewport={{ once: true, amount: 0.2 }}
         onClick={() => (window.location.href = "/library")}
         className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-all text-left group"
       >
@@ -17,9 +22,13 @@ const QuickActions = () => {
         </div>
         <h3 className="text-xl mb-1">Мои продукты</h3>
         <p className="text-sm text-gray-600">Список за сегодня</p>
-      </button>
+      </motion.button>
 
-      <button
+      <motion.button
+        initial={{ opacity: 0, y: 25 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3, delay: 0.2 }}
+        viewport={{ once: true, amount: 0.2 }}
         onClick={() => (window.location.href = "/diary")}
         className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-all text-left group"
       >
@@ -31,9 +40,13 @@ const QuickActions = () => {
         </div>
         <h3 className="text-xl mb-1">Дневник пищи</h3>
         <p className="text-sm text-gray-600">Прошлые и текущие записи</p>
-      </button>
+      </motion.button>
 
-      <button
+      <motion.button
+        initial={{ opacity: 0, y: 25 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3, delay: 0.3 }}
+        viewport={{ once: true, amount: 0.2 }}
         onClick={() => (window.location.href = "/profile")}
         className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-all text-left group"
       >
@@ -45,7 +58,7 @@ const QuickActions = () => {
         </div>
         <h3 className="text-xl mb-1">Профиль</h3>
         <p className="text-sm text-gray-600">Постановка цели и активность</p>
-      </button>
+      </motion.button>
     </div>
   );
 };
