@@ -81,7 +81,6 @@ const AddProductItem = () => {
   const handleCloseModal = (open: boolean) => {
     setShowAddModal(open);
     if (!open) {
-      // Сбрасываем форму и ошибки при закрытии модалки
       setFormData({
         name: "",
         category_id: "",
@@ -199,9 +198,11 @@ const AddProductItem = () => {
                     Порция
                   </Label>
                   <Input
-                    type="text"
+                    type="number"
+                    step="1"
+                    min="0"
                     id="modal-portion"
-                    placeholder="100г"
+                    placeholder="Укажите в гр"
                     className={`h-14 text-lg rounded-xl ${
                       errors.portion
                         ? "border-red-500 focus:border-red-500"
@@ -230,7 +231,7 @@ const AddProductItem = () => {
                       step="1"
                       min="0"
                       id="modal-calories"
-                      placeholder="0"
+                      placeholder="Укажите в гр"
                       className={`h-14 text-lg rounded-xl pr-16 ${
                         errors.calories
                           ? "border-red-500 focus:border-red-500"
@@ -260,7 +261,7 @@ const AddProductItem = () => {
                       step="1"
                       min="0"
                       id="modal-protein"
-                      placeholder="0"
+                      placeholder="Укажите в гр"
                       className={`h-14 text-lg rounded-xl pr-16 ${
                         errors.proteins
                           ? "border-red-500 focus:border-red-500"
@@ -290,7 +291,7 @@ const AddProductItem = () => {
                       step="1"
                       min="0"
                       id="modal-fats"
-                      placeholder="0"
+                      placeholder="Укажите в гр"
                       className={`h-14 text-lg rounded-xl pr-16 ${
                         errors.fats ? "border-red-500 focus:border-red-500" : ""
                       }`}
@@ -316,7 +317,7 @@ const AddProductItem = () => {
                       step="1"
                       min="0"
                       id="modal-carbs"
-                      placeholder="0"
+                      placeholder="Укажите в гр"
                       className={`h-14 text-lg rounded-xl pr-16 ${
                         errors.carbs
                           ? "border-red-500 focus:border-red-500"

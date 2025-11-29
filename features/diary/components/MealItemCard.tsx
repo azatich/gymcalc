@@ -94,7 +94,7 @@ const MealItemCard = ({
       <div className="bg-white rounded-2xl p-5 border border-gray-100 transition-all duration-300">
         <div className="flex items-start justify-between mb-3">
           <div className="flex-1">
-            <h3 className="text-lg mb-1">{name}</h3>
+            <h3 className="sm:text-lg mb-1">{name}</h3>
             <div className="flex items-center gap-2 text-sm text-gray-500">
               {mealtime && (
                 <>
@@ -102,7 +102,7 @@ const MealItemCard = ({
                   <span>•</span>
                 </>
               )}
-              <span>{portion}</span>
+              <span>{portion}г</span>
               {time && (
                 <>
                   <span>•</span>

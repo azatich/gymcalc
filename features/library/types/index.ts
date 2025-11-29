@@ -9,13 +9,13 @@ export interface Product {
   created_at: string;
   updated_at: string;
   category_id: string;
-  portion: string;
+  portion: number;
 }
 
 export interface ProductFormData {
   name: string;
   category_id: string;
-  portion: string;
+  portion: number;
   calories: number;
   proteins: number;
   fats: number;

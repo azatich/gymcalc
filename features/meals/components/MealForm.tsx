@@ -20,7 +20,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { useFoodCategoryQuery } from "@/features/food_category/hooks/useFoodCategoryQuery";
 import { useFoodLibraryQuery } from "@/features/library/hooks/useFoodLibraryQuery";
 import { Product } from "@/features/library/types";
-import { Loader2, Plus, Search, X } from "lucide-react";
+import { Loader2, Plus, X } from "lucide-react";
 import { useMemo, useRef, useState, useEffect } from "react";
 import { getAvailableCategories } from "@/lib/getAvailableCategories";
 import { useMealMutation } from "../hooks/useMealMutation";
@@ -61,7 +61,7 @@ const MealForm = () => {
     name: "",
     time: "",
     mealtime: "",
-    portion: "",
+    portion: 0,
     calories: 0,
     proteins: 0,
     fats: 0,
@@ -121,7 +121,7 @@ const MealForm = () => {
       newErrors.mealtime = "Время приёма пищи обязательно";
     }
 
-    if (!formData.portion || !formData.portion.trim()) {
+    if (!formData.portion || !formData.portion) {
       newErrors.portion = "Порция обьязательна";
     }
 
@@ -189,7 +189,7 @@ const MealForm = () => {
       name: "",
       time: "",
       mealtime: "",
-      portion: "",
+      portion: 0,
       calories: 0,
       proteins: 0,
       fats: 0,
@@ -209,9 +209,10 @@ const MealForm = () => {
           proteins: acc.proteins + item.product.proteins_per_100g * multiplier,
           fats: acc.fats + item.product.fat_per_100g * multiplier,
           carbs: acc.carbs + item.product.carbs_per_100g * multiplier,
+          portion: acc.portion + item.product.portion * multiplier,
         };
       },
-      { calories: 0, proteins: 0, fats: 0, carbs: 0 }
+      { calories: 0, proteins: 0, fats: 0, carbs: 0, portion: 0 }
     );
   }, [selectedProducts]);
 
@@ -220,14 +221,11 @@ const MealForm = () => {
       const names = selectedProducts
         .map((item) => item.product.name)
         .join(", ");
-      const portions = selectedProducts
-        .map((item) => `${item.product.portion} × ${item.multiplier}`)
-        .join(" + ");
 
       setFormData((prev) => ({
         ...prev,
         name: names,
-        portion: portions,
+        portion: Math.round(calculateTotals.portion),
         calories: calculateTotals.calories,
         proteins: formatNumber(calculateTotals.proteins),
         fats: formatNumber(calculateTotals.fats),
@@ -241,7 +239,7 @@ const MealForm = () => {
           return {
             ...prev,
             name: "",
-            portion: "",
+            portion: 0,
             calories: 0,
             proteins: 0,
             fats: 0,
@@ -797,7 +795,10 @@ const MealForm = () => {
                 <div className="flex justify-between items-center">
                   <span className="text-sm text-gray-600">Итого:</span>
                   <span className="font-medium">
-                    {selectedProduct.portion} × {portionMultiplier || 1}
+                    {Math.round(
+                      selectedProduct.portion *
+                        parseFloat(portionMultiplier || "1")
+                    )}
                   </span>
                 </div>
                 <div className="border-t border-gray-200 pt-3 space-y-2">

@@ -115,13 +115,15 @@ const EditProductItem = ({ product }: { product: Product }) => {
                 Порция
               </Label>
               <Input
-                type="text"
-                id="modal-serving"
-                placeholder="100г"
+                type="number"
+                step="1"
+                min="0"
+                id="modal-portion"
+                placeholder="Укажите в гр"
                 className="h-14 text-lg rounded-xl"
                 value={formData.portion}
                 onChange={(e) =>
-                  setFormData({ ...formData, portion: e.target.value })
+                  setFormData({ ...formData, portion: Number(e.target.value) })
                 }
               />
             </div>
@@ -137,7 +139,7 @@ const EditProductItem = ({ product }: { product: Product }) => {
                   type="number"
                   step="1"
                   id="modal-calories"
-                  placeholder="0"
+                  placeholder="Укажите в гр"
                   className="h-14 text-lg rounded-xl pr-16"
                   value={formData.calories}
                   onChange={(e) =>
@@ -162,7 +164,7 @@ const EditProductItem = ({ product }: { product: Product }) => {
                   type="number"
                   step="1"
                   id="modal-proteins"
-                  placeholder="0"
+                  placeholder="Укажите в гр"
                   className="h-14 text-lg rounded-xl pr-16"
                   value={formData.proteins}
                   onChange={(e) =>
@@ -187,7 +189,7 @@ const EditProductItem = ({ product }: { product: Product }) => {
                   type="number"
                   step="1"
                   id="modal-fats"
-                  placeholder="0"
+                  placeholder="Укажите в гр"
                   className="h-14 text-lg rounded-xl pr-16"
                   value={formData.fats}
                   onChange={(e) =>
@@ -209,7 +211,7 @@ const EditProductItem = ({ product }: { product: Product }) => {
                   type="number"
                   step="1"
                   id="modal-carbs"
-                  placeholder="0"
+                  placeholder="Укажите в гр"
                   className="h-14 text-lg rounded-xl pr-16"
                   value={formData.carbs}
                   onChange={(e) =>

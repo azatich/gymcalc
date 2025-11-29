@@ -14,7 +14,7 @@ export const validateProductAddForm = <T extends Record<string, any>>(
     newErrors.category_id = "Категория обязательна";
   }
 
-  if (!formData.portion.trim()) {
+  if (!formData.portion) {
     newErrors.portion = "Порция обязательна";
   }
 
