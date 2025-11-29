@@ -9,7 +9,7 @@ const QuickActions = () => {
       <motion.button
         initial={{ opacity: 0, y: 25 }}
         whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.3, delay: 0.1 }}
+        transition={{ duration: 0.5, delay: 0.1, ease: 'easeIn' }}
         viewport={{ once: true, amount: 0.2 }}
         onClick={() => (window.location.href = "/library")}
         className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-all text-left group"
@@ -27,7 +27,7 @@ const QuickActions = () => {
       <motion.button
         initial={{ opacity: 0, y: 25 }}
         whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.3, delay: 0.2 }}
+        transition={{ duration: 0.5, delay: 0.2, ease: 'easeIn' }}
         viewport={{ once: true, amount: 0.2 }}
         onClick={() => (window.location.href = "/diary")}
         className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-all text-left group"
@@ -45,7 +45,7 @@ const QuickActions = () => {
       <motion.button
         initial={{ opacity: 0, y: 25 }}
         whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.3, delay: 0.3 }}
+        transition={{ duration: 0.5, delay: 0.3, ease: 'easeIn' }}
         viewport={{ once: true, amount: 0.2 }}
         onClick={() => (window.location.href = "/profile")}
         className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-all text-left group"

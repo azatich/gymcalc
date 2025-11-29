@@ -1,10 +1,11 @@
-'use client';
+"use client";
 
 import { Button } from "@/components/ui/button";
 import { useDailyGoals } from "@/features/diary/hooks/useDailyGoals";
 import { useTotalEaten } from "@/features/diary/hooks/useTotalEaten";
 import { useMealQuery } from "@/features/meals/hooks/useMealQuery";
 import { Plus, Loader2 } from "lucide-react";
+import { motion } from "framer-motion";
 
 const CircularProgress = () => {
   const { data: foods, isPending: isLoadingFoods } = useMealQuery(new Date());
@@ -15,11 +16,12 @@ const CircularProgress = () => {
   const strokeWidth = 20;
   const radius = (size - strokeWidth) / 2;
   const circumference = 2 * Math.PI * radius;
-  const progress = dailyGoals.calories > 0 
-    ? Math.min((totalEaten.calories / dailyGoals.calories) * 100, 100) 
-    : 0;
+  const progress =
+    dailyGoals.calories > 0
+      ? Math.min((totalEaten.calories / dailyGoals.calories) * 100, 100)
+      : 0;
   const offset = circumference - (progress / 100) * circumference;
-  
+
   const remainingCalories = dailyGoals.calories - totalEaten.calories;
   const isGoalReached = remainingCalories <= 0;
 
@@ -51,7 +53,7 @@ const CircularProgress = () => {
               strokeWidth={strokeWidth}
             />
             {/* Progress circle */}
-            <circle
+            <motion.circle
               cx={size / 2}
               cy={size / 2}
               r={radius}
@@ -59,9 +61,12 @@ const CircularProgress = () => {
               stroke="url(#gradient)"
               strokeWidth={strokeWidth}
               strokeDasharray={circumference}
-              strokeDashoffset={offset}
               strokeLinecap="round"
               className="transition-all duration-500 ease-out"
+              initial={{ strokeDashoffset: circumference }}
+              whileInView={{ strokeDashoffset: offset }}
+              viewport={{once: false}}
+              transition={{ duration: 0.6 }}
             />
             {/* Gradient definition */}
             <defs>
@@ -83,7 +88,11 @@ const CircularProgress = () => {
               </div>
             ) : (
               <div className="text-sm text-gray-500">
-                осталось <span className="font-semibold text-gray-700">{remainingCalories}</span> ккал
+                осталось{" "}
+                <span className="font-semibold text-gray-700">
+                  {remainingCalories}
+                </span>{" "}
+                ккал
               </div>
             )}
           </div>
@@ -91,14 +100,16 @@ const CircularProgress = () => {
 
         {/* Progress percentage */}
         <div className="mt-4 text-center">
-          <span className="text-2xl font-bold text-indigo-500">{Math.round(progress)}%</span>
+          <span className="text-2xl font-bold text-indigo-500">
+            {Math.round(progress)}%
+          </span>
           <span className="text-sm text-gray-500 ml-1">от дневной нормы</span>
         </div>
       </div>
 
       {/* Add Button */}
       <Button
-      onClick={() => window.location.href = '/meals'}
+        onClick={() => (window.location.href = "/meals")}
         className="w-full text-white h-14 text-lg rounded-2xl shadow-md hover:shadow-lg transition-all bg-linear-to-r bg-black hover:bg-black/80 duration-200"
         size="lg"
       >
