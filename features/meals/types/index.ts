@@ -15,7 +15,7 @@ export interface MealApiResponse {
   name: string;
   time: string;
   mealtime: string;
-  portion: string;
+  portion: number;
   calories: 2;
   proteins: 0;
   carbs: 2;
